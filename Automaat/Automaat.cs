@@ -111,6 +111,11 @@ namespace Automaat
             }
             Console.WriteLine();
 
+            if (!IsDfa())
+            {
+                return false;
+            }
+
             var finalState = GetFinalState(symbols);
             return _finalStates.Contains(finalState);
         }
