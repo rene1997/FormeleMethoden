@@ -8,23 +8,23 @@ namespace Automaat
 {
     public class Transition<T> : IComparable<Transition<T>> where T : IComparable
     {
-        public const char EPSILON = '$';
+        public const char Epsilon = '$';
 
-        public T fromState { get; }
-        public char symbol { get; }
-        public T toState { get; }
+        public T FromState { get; }
+        public char Symbol { get; }
+        public T ToState { get; }
 
         public Transition(T fromOrTo, char s) : this(fromOrTo, s, fromOrTo)
         { }
 
-        public Transition(T from, T to) : this(from, EPSILON, to)
+        public Transition(T from, T to) : this(from, Epsilon, to)
         { }
 
         public Transition(T from, char s, T to)
         {
-            this.fromState = from;
-            this.symbol = s;
-            this.toState = to;
+            this.FromState = from;
+            this.Symbol = s;
+            this.ToState = to;
         }
         
         public override bool Equals(Object other)
@@ -35,9 +35,9 @@ namespace Automaat
             {
                 Transition<T> oT = (Transition<T>)other;
                 return
-                    fromState.CompareTo(oT.fromState) == 0 &&
-                    toState.CompareTo(oT.toState) == 0 &&
-                    symbol == oT.symbol;
+                    FromState.CompareTo(oT.FromState) == 0 &&
+                    ToState.CompareTo(oT.ToState) == 0 &&
+                    Symbol == oT.Symbol;
             }
 
             return false;
@@ -45,16 +45,16 @@ namespace Automaat
 
         public int CompareTo(Transition<T> other)
         {
-            int fromCmp = fromState.CompareTo(other.fromState);
-            int symbolCmp = symbol.CompareTo(other.symbol);
-            int toCmp = toState.CompareTo(other.toState);
+            int fromCmp = FromState.CompareTo(other.FromState);
+            int symbolCmp = Symbol.CompareTo(other.Symbol);
+            int toCmp = ToState.CompareTo(other.ToState);
 
             return (fromCmp != 0 ? fromCmp : (symbolCmp != 0 ? symbolCmp : toCmp));
         }
 
         public override string ToString()
         {
-            return $"({this.fromState}, {this.symbol}) --> {this.toState}";
+            return $"({this.FromState}, {this.Symbol}) --> {this.ToState}";
         }
 
         public override int GetHashCode()

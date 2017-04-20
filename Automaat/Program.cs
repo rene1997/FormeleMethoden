@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Automaat
 {
@@ -12,21 +9,22 @@ namespace Automaat
         {
             Console.WriteLine("Hello World");
             //testTranstion();
-            Automaat<string> a1 = TestAutomaat.getExampleSlide8Lesson2();
-            Automaat<string> a2 = TestAutomaat.getExampleSlide14Lesson2();
+            Automaat<string> a1 = TestAutomaat.GetExampleSlide8Lesson2();
+            Automaat<string> a2 = TestAutomaat.GetExampleSlide14Lesson2();
 
-            a1.printTransitions();
-            Console.WriteLine("is automaat 1 a DFA: " + a1.isDFA());
+            //a1.printTransitions();
+            Console.WriteLine("is automaat 1 a DFA: " + a1.IsDfa());
 
-            a2.printTransitions();
-            Console.WriteLine("is automaat 2 a DFA: " + a2.isDFA());
+            //a2.printTransitions();
+            Console.WriteLine("is automaat 2 a DFA: " + a2.IsDfa());
 
-            pracL1Rep1();
+            PracL1ERepresentatie1();
+            PracL1Representatie2(); 
 
             Console.ReadLine();
         }
 
-        static void testTranstion()
+        static void TestTranstion()
         {
             Console.WriteLine("Testing equals method for transition");
             Console.WriteLine("Building transitions");
@@ -36,11 +34,11 @@ namespace Automaat
             Transition<string> t4 = new Transition<string>("q2", 'a', "q1");
             Transition<string> t5 = new Transition<string>("q1", 'b', "q2");
 
-            Console.WriteLine("Transition 1: " + t1.ToString());
-            Console.WriteLine("Transition 2: " + t2.ToString());
-            Console.WriteLine("Transition 3: " + t3.ToString());
-            Console.WriteLine("Transition 4: " + t4.ToString());
-            Console.WriteLine("Transition 5: " + t5.ToString());
+            Console.WriteLine("Transition 1: " + t1);
+            Console.WriteLine("Transition 2: " + t2);
+            Console.WriteLine("Transition 3: " + t3);
+            Console.WriteLine("Transition 4: " + t4);
+            Console.WriteLine("Transition 5: " + t5);
 
             Console.WriteLine("Getting results");
             bool test1,test2,test3,test4;
@@ -60,57 +58,59 @@ namespace Automaat
             Console.WriteLine("False: "+test4);
         }
 
-        static void testAutomaat(Automaat<string> a, List<Tuple<string, bool>> testWords)
+        static void TestingAutomaat(Automaat<string> a, List<Tuple<string, bool>> testWords)
         {
             Console.WriteLine("Testing automaat class");
-            Console.WriteLine("Automaat is a DFA: " + a.isDFA());            
+            Console.WriteLine("Automaat is a DFA: " + a.IsDfa());            
             
             foreach(Tuple<string, bool> word in testWords)
             {
-                Console.WriteLine($"Word: {word.Item1} is accepted, expacted: {word.Item2}, result: {a.accepteer(word.Item1)}");
+                Console.WriteLine("----------");
+                Console.WriteLine($"Word: is {word.Item1} accepted?, expacted: {word.Item2}, result: {a.Accepteer(word.Item1)}");
             }
+            Console.WriteLine();
         }
 
-        static void pracL1Rep1()
+        static void PracL1ERepresentatie1()
         {
             /*begint met abb of eindigt op baab*/
             char[] alphabet = { 'a', 'b' };
             Automaat<string> m = new Automaat<string>(alphabet);
 
-            m.addTransition(new Transition<string>("1", 'a', "2"));
-            m.addTransition(new Transition<string>("1", 'b', "5"));
+            m.AddTransition(new Transition<string>("1", 'a', "2"));
+            m.AddTransition(new Transition<string>("1", 'b', "5"));
 
-            m.addTransition(new Transition<string>("2", 'a', "9"));
-            m.addTransition(new Transition<string>("2", 'b', "3"));
+            m.AddTransition(new Transition<string>("2", 'a', "9"));
+            m.AddTransition(new Transition<string>("2", 'b', "3"));
 
-            m.addTransition(new Transition<string>("3", 'a', "6"));
-            m.addTransition(new Transition<string>("3", 'b', "4"));
+            m.AddTransition(new Transition<string>("3", 'a', "6"));
+            m.AddTransition(new Transition<string>("3", 'b', "4"));
 
-            m.addTransition(new Transition<string>("4", 'a', "4"));
-            m.addTransition(new Transition<string>("4", 'b', "4"));
+            m.AddTransition(new Transition<string>("4", 'a', "4"));
+            m.AddTransition(new Transition<string>("4", 'b', "4"));
 
-            m.addTransition(new Transition<string>("5", 'a', "6"));
-            m.addTransition(new Transition<string>("5", 'b', "5"));
+            m.AddTransition(new Transition<string>("5", 'a', "6"));
+            m.AddTransition(new Transition<string>("5", 'b', "5"));
 
-            m.addTransition(new Transition<string>("6", 'a', "7"));
-            m.addTransition(new Transition<string>("6", 'b', "5"));
+            m.AddTransition(new Transition<string>("6", 'a', "7"));
+            m.AddTransition(new Transition<string>("6", 'b', "5"));
 
-            m.addTransition(new Transition<string>("7", 'a', "9"));
-            m.addTransition(new Transition<string>("7", 'b', "8"));
+            m.AddTransition(new Transition<string>("7", 'a', "9"));
+            m.AddTransition(new Transition<string>("7", 'b', "8"));
 
-            m.addTransition(new Transition<string>("8", 'a', "6"));
-            m.addTransition(new Transition<string>("8", 'b', "5"));
+            m.AddTransition(new Transition<string>("8", 'a', "6"));
+            m.AddTransition(new Transition<string>("8", 'b', "5"));
 
-            m.addTransition(new Transition<string>("9", 'a', "9"));
-            m.addTransition(new Transition<string>("9", 'b', "5"));
+            m.AddTransition(new Transition<string>("9", 'a', "9"));
+            m.AddTransition(new Transition<string>("9", 'b', "5"));
 
 
             // only on start state in a dfa:
-            m.defineAsStartState("1");
+            m.DefineAsStartState("1");
 
             // two final states:
-            m.defineAsFinalState("4");
-            m.defineAsFinalState("8");
+            m.DefineAsFinalState("4");
+            m.DefineAsFinalState("8");
 
             List<Tuple<string, bool>> testWords = new List<Tuple<string, bool>>();
             testWords.Add(new Tuple<string, bool>("abb", true));
@@ -121,7 +121,49 @@ namespace Automaat
             testWords.Add(new Tuple<string, bool>("aabbabaaabaab", true));
             testWords.Add(new Tuple<string, bool>("ababaabaa", false));
             testWords.Add(new Tuple<string, bool>("abba", true));
-            testAutomaat(m, testWords);
+            TestingAutomaat(m, testWords);
+        }
+
+        static void PracL1Representatie2()
+        {
+            char[] alphabet = { 'a', 'b' };
+            Automaat<string> m = new Automaat<string>(alphabet);
+
+            m.AddTransition(new Transition<string>("1", alphabet[0], "2"));
+            m.AddTransition(new Transition<string>("1", alphabet[1], "3"));
+
+            m.AddTransition(new Transition<string>("2", alphabet[0], "1"));
+            m.AddTransition(new Transition<string>("2", alphabet[1], "5"));
+
+            m.AddTransition(new Transition<string>("3", alphabet[0], "2"));
+            m.AddTransition(new Transition<string>("3", alphabet[1], "4"));
+
+            m.AddTransition(new Transition<string>("4", alphabet[0], "2"));
+            m.AddTransition(new Transition<string>("4", alphabet[1], "4"));
+
+            m.AddTransition(new Transition<string>("5", alphabet[0], "1"));
+            m.AddTransition(new Transition<string>("5", alphabet[1], "4"));
+
+            // only on start state in a dfa:
+            m.DefineAsStartState("1");
+
+            // two final states:
+            m.DefineAsFinalState("2");
+            m.DefineAsFinalState("4");
+            m.DefineAsFinalState("5");
+
+            List<Tuple<string, bool>> testWords = new List<Tuple<string, bool>>();
+            testWords.Add(new Tuple<string, bool>("a", true));
+            testWords.Add(new Tuple<string, bool>("bb", true));
+            testWords.Add(new Tuple<string, bool>("abb", true));
+            testWords.Add(new Tuple<string, bool>("aabb", true));
+            testWords.Add(new Tuple<string, bool>("baa", false));
+            testWords.Add(new Tuple<string, bool>("aabbabaaabab", true));
+            testWords.Add(new Tuple<string, bool>("ababaabaa", false));
+            testWords.Add(new Tuple<string, bool>("abba", true));
+            testWords.Add(new Tuple<string, bool>("babab", false));
+            testWords.Add(new Tuple<string, bool>("ababa", true));
+            TestingAutomaat(m, testWords);
         }
     }
 }
