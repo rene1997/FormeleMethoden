@@ -102,5 +102,10 @@ namespace Automaat
 
             return toStates;
         }
+
+        public bool accepteer(string s)
+        {
+            return true;
+        }
     }
 }
