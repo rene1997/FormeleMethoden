@@ -11,8 +11,15 @@ namespace Automaat
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World");
-            testTranstion();
+            //testTranstion();
+            Automaat<string> a1 = TestAutomaat.getExampleSlide8Lesson2();
+            Automaat<string> a2 = TestAutomaat.getExampleSlide14Lesson2();
 
+            a1.printTransitions();
+            Console.WriteLine("is automaat 1 a DFA: " + a1.isDFA());
+
+            a2.printTransitions();
+            Console.WriteLine("is automaat 2 a DFA: " + a2.isDFA());
 
             Console.ReadLine();
         }

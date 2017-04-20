@@ -38,5 +38,37 @@ namespace Automaat
 
             return m;
         }
+
+        public static Automaat<string> getExampleSlide14Lesson2()
+        {
+            char[] alphabet = { 'a', 'b' };
+            Automaat<string> m = new Automaat<string>(alphabet);
+
+            m.addTransition(new Transition<string>("A", 'a', "C"));
+            m.addTransition(new Transition<string>("A", 'b', "B"));
+            m.addTransition(new Transition<string>("A", 'b', "C"));
+
+            m.addTransition(new Transition<string>("B", 'b', "C"));
+            m.addTransition(new Transition<string>("B", "C"));
+
+            m.addTransition(new Transition<string>("C", 'a', "D"));
+            m.addTransition(new Transition<string>("C", 'a', "E"));
+            m.addTransition(new Transition<string>("C", 'b', "D"));
+
+            m.addTransition(new Transition<string>("D", 'a', "B"));
+            m.addTransition(new Transition<string>("D", 'a', "C"));
+
+            m.addTransition(new Transition<string>("E", 'a'));
+            m.addTransition(new Transition<string>("E", "D"));
+
+            // only on start state in a dfa:
+            m.defineAsStartState("A");
+
+            // two final states:
+            m.defineAsFinalState("C");
+            m.defineAsFinalState("E");
+
+            return m;
+        }
     }
 }

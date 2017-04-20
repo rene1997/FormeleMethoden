@@ -90,7 +90,17 @@ namespace Automaat
 
         public List<T> getToStates(T from, char symbol)
         {
-            return new List<T>();
+            List<T> toStates = new List<T>();
+
+            foreach(Transition<T> trans in transitions)
+            {
+                if (trans.fromState.Equals(from) && trans.symbol.Equals(symbol))
+                {
+                    toStates.Add(trans.toState);
+                }
+            }
+
+            return toStates;
         }
     }
 }
