@@ -21,6 +21,7 @@ namespace Automaat
             PracL1ERepresentatie1();
             PracL1Representatie2();
             PracL1Representatie3();
+            PracL1Representatie4();
 
             Console.ReadLine();
         }
@@ -201,6 +202,50 @@ namespace Automaat
             testWords.Add(new Tuple<string, bool>("bbaabb", false));
             testWords.Add(new Tuple<string, bool>("aabaab", false));
             testWords.Add(new Tuple<string, bool>("ababaabaa", false));
+            TestingAutomaat(m, testWords);
+        }
+
+        static void PracL1Representatie4()
+        {
+            char[] alphabet = { 'a', 'b' };
+            Automaat<string> m = new Automaat<string>(alphabet);
+
+            m.AddTransition(new Transition<string>("1", alphabet[0], "2"));
+            m.AddTransition(new Transition<string>("1", alphabet[1], "8"));
+
+            m.AddTransition(new Transition<string>("2", alphabet[0], "8"));
+            m.AddTransition(new Transition<string>("2", alphabet[1], "3"));
+
+            m.AddTransition(new Transition<string>("3", alphabet[0], "8"));
+            m.AddTransition(new Transition<string>("3", alphabet[1], "4"));
+
+            m.AddTransition(new Transition<string>("4", alphabet[0], "5"));
+            m.AddTransition(new Transition<string>("4", alphabet[1], "4"));
+
+            m.AddTransition(new Transition<string>("5", alphabet[0], "6"));
+            m.AddTransition(new Transition<string>("5", alphabet[1], "4"));
+
+            m.AddTransition(new Transition<string>("6", alphabet[0], "4"));
+            m.AddTransition(new Transition<string>("6", alphabet[1], "7"));
+
+            m.AddTransition(new Transition<string>("7", alphabet[0], "7"));
+            m.AddTransition(new Transition<string>("7", alphabet[1], "7"));
+
+            m.AddTransition(new Transition<string>("8", alphabet[0], "8"));
+            m.AddTransition(new Transition<string>("8", alphabet[1], "8"));
+
+            // only on start state in a dfa:
+            m.DefineAsStartState("1");
+
+            // two final states:
+            m.DefineAsFinalState("7");
+
+            List<Tuple<string, bool>> testWords = new List<Tuple<string, bool>>();
+            testWords.Add(new Tuple<string, bool>("abbaabababab", true));
+            testWords.Add(new Tuple<string, bool>("abbaab", true));
+            testWords.Add(new Tuple<string, bool>("abb", false));
+            testWords.Add(new Tuple<string, bool>("abaab", false));
+            testWords.Add(new Tuple<string, bool>("ababaaba", false));
             TestingAutomaat(m, testWords);
         }
     }
