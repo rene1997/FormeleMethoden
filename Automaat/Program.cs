@@ -7,16 +7,16 @@ namespace Automaat
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World");
+            //Console.WriteLine("Hello World");
             //testTranstion();
             Automaat<string> a1 = TestAutomaat.GetExampleSlide8Lesson2();
             Automaat<string> a2 = TestAutomaat.GetExampleSlide14Lesson2();
 
             //a1.printTransitions();
-            Console.WriteLine("is automaat 1 a DFA: " + a1.IsDfa());
+            //Console.WriteLine("is automaat 1 a DFA: " + a1.IsDfa());
 
             //a2.printTransitions();
-            Console.WriteLine("is automaat 2 a DFA: " + a2.IsDfa());
+            //Console.WriteLine("is automaat 2 a DFA: " + a2.IsDfa());
 
             PracL1ERepresentatie1();
             PracL1Representatie2();
@@ -60,9 +60,9 @@ namespace Automaat
             Console.WriteLine("False: "+test4);
         }
 
-        static void TestingAutomaat(Automaat<string> a, List<Tuple<string, bool>> testWords)
+        static void TestingAutomaat(string automaat_name, Automaat<string> a, List<Tuple<string, bool>> testWords)
         {
-            Console.WriteLine("Testing automaat class");
+            Console.WriteLine($"Testing automaat class, {automaat_name}");
             Console.WriteLine("Automaat is a DFA: " + a.IsDfa());            
             
             foreach(Tuple<string, bool> word in testWords)
@@ -123,7 +123,7 @@ namespace Automaat
             testWords.Add(new Tuple<string, bool>("aabbabaaabaab", true));
             testWords.Add(new Tuple<string, bool>("ababaabaa", false));
             testWords.Add(new Tuple<string, bool>("abba", true));
-            TestingAutomaat(m, testWords);
+            TestingAutomaat("Begint met abb of eindigt op baab",m, testWords);
         }
 
         static void PracL1Representatie2()
@@ -165,7 +165,7 @@ namespace Automaat
             testWords.Add(new Tuple<string, bool>("abba", true));
             testWords.Add(new Tuple<string, bool>("babab", false));
             testWords.Add(new Tuple<string, bool>("ababa", true));
-            TestingAutomaat(m, testWords);
+            TestingAutomaat("Bevat een even aantal b’s of bevat een oneven aantal a’s",m, testWords);
         }
 
         static void PracL1Representatie3()
@@ -202,7 +202,7 @@ namespace Automaat
             testWords.Add(new Tuple<string, bool>("bbaabb", false));
             testWords.Add(new Tuple<string, bool>("aabaab", false));
             testWords.Add(new Tuple<string, bool>("ababaabaa", false));
-            TestingAutomaat(m, testWords);
+            TestingAutomaat("Bevat een even aantal b’s en eindigt op aab", m, testWords);
         }
 
         static void PracL1Representatie4()
@@ -246,7 +246,7 @@ namespace Automaat
             testWords.Add(new Tuple<string, bool>("abb", false));
             testWords.Add(new Tuple<string, bool>("abaab", false));
             testWords.Add(new Tuple<string, bool>("ababaaba", false));
-            TestingAutomaat(m, testWords);
+            TestingAutomaat("Begint met abb en bevat baab",m, testWords);
         }
     }
 }
