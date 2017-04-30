@@ -116,13 +116,28 @@ namespace Automaat
                 return false;
             }
 
-            var finalState = GetFinalState(symbols);
-            return _finalStates.Contains(finalState);
+            List<T> finalStates = new List<T>();
+            foreach (T startState in _startStates)
+            {
+                var finalState = GetFinalState(startState, symbols);
+                finalStates.Add(finalState);
+            }
+            
+            foreach (T finalState in finalStates)
+            {
+                if (_finalStates.Contains(finalState)) return true;
+            }
+            return false;
         }
 
         private T GetFinalState(char[] symbols)
         {
             var startState = _startStates.First();
+            return GetFinalState(startState, symbols);
+        }
+
+        private T GetFinalState(T startState, char[] symbols)
+        {
             var finalState = GetNextState(startState, symbols);
             return finalState;
         }

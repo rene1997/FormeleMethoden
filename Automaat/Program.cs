@@ -18,9 +18,9 @@ namespace Automaat
             //a2.printTransitions();
             //Console.WriteLine("is automaat 2 a DFA: " + a2.IsDfa());
 
-            PracL1ERepresentatie1();
-            PracL1Representatie2();
-            PracL1Representatie3();
+            //PracL1ERepresentatie1();
+            //PracL1Representatie2();
+            //PracL1Representatie3();
             PracL1Representatie4();
 
             Console.ReadLine();
@@ -234,7 +234,7 @@ namespace Automaat
             m.AddTransition(new Transition<string>("8", alphabet[0], "8"));
             m.AddTransition(new Transition<string>("8", alphabet[1], "8"));
 
-            // only on start state in a dfa:
+            // only one start state in a dfa:
             m.DefineAsStartState("1");
 
             // two final states:
