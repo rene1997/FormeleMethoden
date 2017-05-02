@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -111,65 +112,40 @@ namespace Automaat
             }
             //Console.WriteLine();
 
-            if (!IsDfa())
-            {
-                return AcceptNdfa(s, symbols); 
-            }
-
-            return AcceptDfa(s, symbols);
-        }
-
-        private bool AcceptDfa(string s, char[] symbols)
-        {
             var finalStates = new List<T>();
             foreach (var startState in _startStates)
             {
-                var finalState = GetFinalState(startState, symbols);
-                finalStates.Add(finalState);
+                GetNextStates(startState, symbols, ref finalStates);
             }
 
             foreach (var finalState in finalStates)
             {
                 if (_finalStates.Contains(finalState)) return true;
             }
+
             return false;
         }
 
-        private T GetFinalState(T startState, char[] symbols)
+        private void GetNextStates(T currentState, char[] leftoverSymbols, ref List<T> finalStates)
         {
-            var finalState = GetNextState(startState, symbols);
-            return finalState;
-        }
-
-        private T GetNextState(T currentState, char[] leftoverSymbols)
-        {
-            if (leftoverSymbols.Length == 0) return currentState;
+            if (leftoverSymbols.Length == 0)
+            {
+                finalStates.Add(currentState);
+                return;
+            }
 
             var nextSymbol = leftoverSymbols.First();
-            var trans = GetTransition(currentState, nextSymbol);
-
+            var trans = GetTransitions(currentState, nextSymbol);
             leftoverSymbols = leftoverSymbols.Skip(1).ToArray();
-           
-            if (trans == null) return GetNextState(currentState, leftoverSymbols);
-            return GetNextState(trans.ToState, leftoverSymbols);
-        }       
-        
-        private Transition<T> GetTransition(T state, char symbol)
-        {
-            foreach (Transition<T> trans in _transitions)
+
+            if (trans == null)  GetNextStates(currentState, leftoverSymbols, ref finalStates);
+            
+            foreach (var t in trans)
             {
-                if (trans.FromState.Equals(state) && trans.Symbol.Equals(symbol))
-                {
-                    return trans;
-                }
+                GetNextStates(t.ToState, leftoverSymbols, ref finalStates);
             }
-            return null;
         }
 
-        public bool AcceptNdfa(string s, char[] symbols)
-        {
-            return false;
-        }
 
         private List<Transition<T>> GetTransitions(T state, char symbol)
         {
