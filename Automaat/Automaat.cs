@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -103,53 +104,60 @@ namespace Automaat
 
         public bool Accepteer(string s)
         {
-            char[] symbols = s.ToCharArray();
+            var symbols = s.ToCharArray();
             foreach (char sym in symbols)
             {
-                Console.Write(sym);
+                //Console.Write(sym);
                 if (!_symbols.Contains(sym)) { return false; }
             }
-            Console.WriteLine();
+            //Console.WriteLine();
 
-            if (!IsDfa())
+            var finalStates = new List<T>();
+            foreach (var startState in _startStates)
             {
-                return false;
+                GetNextStates(startState, symbols, ref finalStates);
             }
 
-            var finalState = GetFinalState(symbols);
-            return _finalStates.Contains(finalState);
+            foreach (var finalState in finalStates)
+            {
+                if (_finalStates.Contains(finalState)) return true;
+            }
+
+            return false;
         }
 
-        private T GetFinalState(char[] symbols)
+        private void GetNextStates(T currentState, char[] leftoverSymbols, ref List<T> finalStates)
         {
-            var startState = _startStates.First();
-            var finalState = GetNextState(startState, symbols);
-            return finalState;
-        }
+            if (leftoverSymbols.Length == 0)
+            {
+                finalStates.Add(currentState);
+                return;
+            }
 
-        private T GetNextState(T currentState, char[] leftoverSymbols)
-        {
-            if (leftoverSymbols.Length == 0) return currentState;
-
-            char nextSymbol = leftoverSymbols.First();
-            Transition<T> trans = GetTransition(currentState, nextSymbol);
-
+            var nextSymbol = leftoverSymbols.First();
+            var trans = GetTransitions(currentState, nextSymbol);
             leftoverSymbols = leftoverSymbols.Skip(1).ToArray();
-           
-            if (trans == null) return GetNextState(currentState, leftoverSymbols);
-            return GetNextState(trans.ToState, leftoverSymbols);
-        }       
-        
-        private Transition<T> GetTransition(T state, char symbol)
+
+            if (trans == null)  GetNextStates(currentState, leftoverSymbols, ref finalStates);
+            
+            foreach (var t in trans)
+            {
+                GetNextStates(t.ToState, leftoverSymbols, ref finalStates);
+            }
+        }
+
+
+        private List<Transition<T>> GetTransitions(T state, char symbol)
         {
+            var allTransitions = new List<Transition<T>>();
             foreach (Transition<T> trans in _transitions)
             {
                 if (trans.FromState.Equals(state) && trans.Symbol.Equals(symbol))
                 {
-                    return trans;
+                    allTransitions.Add(trans);
                 }
             }
-            return null;
-        } 
+            return allTransitions;
+        }
     }
 }
