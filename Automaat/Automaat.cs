@@ -138,14 +138,17 @@ namespace Automaat
             var trans = GetTransitions(currentState, nextSymbol);
             leftoverSymbols = leftoverSymbols.Skip(1).ToArray();
 
-            if (trans == null)  GetNextStates(currentState, leftoverSymbols, ref finalStates);
+            if (trans == null)
+            {
+                GetNextStates(currentState, leftoverSymbols, ref finalStates);
+                return;
+            }
             
             foreach (var t in trans)
             {
                 GetNextStates(t.ToState, leftoverSymbols, ref finalStates);
             }
         }
-
 
         private List<Transition<T>> GetTransitions(T state, char symbol)
         {
