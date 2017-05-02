@@ -22,6 +22,7 @@ namespace Automaat
             //PracL1Representatie2();
             //PracL1Representatie3();
             PracL1Representatie4();
+            Ndfa();
 
             Console.ReadLine();
         }
@@ -247,6 +248,39 @@ namespace Automaat
             testWords.Add(new Tuple<string, bool>("abaab", false));
             testWords.Add(new Tuple<string, bool>("ababaaba", false));
             TestingAutomaat("Begint met abb en bevat baab",m, testWords);
+        }
+
+        static void Ndfa()
+        {
+            char[] alphabet = { 'a', 'b' };
+            Automaat<string> m = new Automaat<string>(alphabet);
+
+            m.AddTransition(new Transition<string>("1", alphabet[0], "2"));
+            m.AddTransition(new Transition<string>("1", alphabet[0], "3"));
+            m.AddTransition(new Transition<string>("1", alphabet[1], "1"));
+
+            m.AddTransition(new Transition<string>("2", alphabet[0], "2"));
+            m.AddTransition(new Transition<string>("2", alphabet[1], "2"));
+
+            m.AddTransition(new Transition<string>("3", alphabet[0], "2"));
+            m.AddTransition(new Transition<string>("3", alphabet[1], "4"));
+
+            m.AddTransition(new Transition<string>("4", alphabet[0], "2"));
+            m.AddTransition(new Transition<string>("4", alphabet[1], "2"));
+
+            // only on start state in a dfa:
+            m.DefineAsStartState("1");
+
+            // two final states:
+            m.DefineAsFinalState("4");
+
+            var testWords = new List<Tuple<string, bool>>();
+            testWords.Add(new Tuple<string, bool>("ab", true));
+            testWords.Add(new Tuple<string, bool>("ba", false));
+            testWords.Add(new Tuple<string, bool>("aa", false));
+            testWords.Add(new Tuple<string, bool>("bbab", true));
+
+            TestingAutomaat("testing code for ndfa", m, testWords);
         }
     }
 }

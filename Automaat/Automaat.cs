@@ -103,37 +103,36 @@ namespace Automaat
 
         public bool Accepteer(string s)
         {
-            char[] symbols = s.ToCharArray();
+            var symbols = s.ToCharArray();
             foreach (char sym in symbols)
             {
-                Console.Write(sym);
+                //Console.Write(sym);
                 if (!_symbols.Contains(sym)) { return false; }
             }
-            Console.WriteLine();
+            //Console.WriteLine();
 
             if (!IsDfa())
             {
-                return false;
+                return AcceptNdfa(s, symbols); 
             }
 
-            List<T> finalStates = new List<T>();
-            foreach (T startState in _startStates)
+            return AcceptDfa(s, symbols);
+        }
+
+        private bool AcceptDfa(string s, char[] symbols)
+        {
+            var finalStates = new List<T>();
+            foreach (var startState in _startStates)
             {
                 var finalState = GetFinalState(startState, symbols);
                 finalStates.Add(finalState);
             }
-            
-            foreach (T finalState in finalStates)
+
+            foreach (var finalState in finalStates)
             {
                 if (_finalStates.Contains(finalState)) return true;
             }
             return false;
-        }
-
-        private T GetFinalState(char[] symbols)
-        {
-            var startState = _startStates.First();
-            return GetFinalState(startState, symbols);
         }
 
         private T GetFinalState(T startState, char[] symbols)
@@ -146,8 +145,8 @@ namespace Automaat
         {
             if (leftoverSymbols.Length == 0) return currentState;
 
-            char nextSymbol = leftoverSymbols.First();
-            Transition<T> trans = GetTransition(currentState, nextSymbol);
+            var nextSymbol = leftoverSymbols.First();
+            var trans = GetTransition(currentState, nextSymbol);
 
             leftoverSymbols = leftoverSymbols.Skip(1).ToArray();
            
@@ -165,6 +164,24 @@ namespace Automaat
                 }
             }
             return null;
-        } 
+        }
+
+        public bool AcceptNdfa(string s, char[] symbols)
+        {
+            return false;
+        }
+
+        private List<Transition<T>> GetTransitions(T state, char symbol)
+        {
+            var allTransitions = new List<Transition<T>>();
+            foreach (Transition<T> trans in _transitions)
+            {
+                if (trans.FromState.Equals(state) && trans.Symbol.Equals(symbol))
+                {
+                    allTransitions.Add(trans);
+                }
+            }
+            return allTransitions;
+        }
     }
 }
