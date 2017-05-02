@@ -19,14 +19,16 @@ namespace Automaat
             //Console.WriteLine("is automaat 2 a DFA: " + a2.IsDfa());
 
             //PracL1ERepresentatie1();
-            //PracL1Representatie2();
+            PracL1Representatie2();
             //PracL1Representatie3();
-            PracL1Representatie4();
-            Ndfa();
+            //PracL1Representatie3();
+            //PracL1Representatie4();
+            //Ndfa();
 
             Console.ReadLine();
         }
-
+                
+        
         static void TestTranstion()
         {
             Console.WriteLine("Testing equals method for transition");
@@ -125,6 +127,7 @@ namespace Automaat
             testWords.Add(new Tuple<string, bool>("ababaabaa", false));
             testWords.Add(new Tuple<string, bool>("abba", true));
             TestingAutomaat("Begint met abb of eindigt op baab",m, testWords);
+
         }
 
         static void PracL1Representatie2()
@@ -167,6 +170,8 @@ namespace Automaat
             testWords.Add(new Tuple<string, bool>("babab", false));
             testWords.Add(new Tuple<string, bool>("ababa", true));
             TestingAutomaat("Bevat een even aantal b’s of bevat een oneven aantal a’s",m, testWords);
+            var a = m.GeefTaal(2);
+            Console.WriteLine(a.Count);
         }
 
         static void PracL1Representatie3()

@@ -159,5 +159,29 @@ namespace Automaat
             }
             return allTransitions;
         }
+
+        public List<string> GeefTaal(int length)
+        {
+            var allWords = new List<string>();
+            MakeWords(string.Empty, length, ref allWords);
+            return allWords;
+        }
+
+        private void MakeWords(String word, int length, ref List<string> allWords)
+        {
+            if (word.Length >= length)
+                return;
+
+            for (int i = 0; i < _symbols.Count; i++)
+            {
+                var newWord = word + _symbols.ElementAt(i);
+                Console.WriteLine(newWord);
+                if (Accepteer(newWord))
+                {
+                    allWords.Add(newWord);
+                }
+                makeWords(newWord, length, ref allWords);
+            }
+        }
     }
 }
