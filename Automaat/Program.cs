@@ -9,8 +9,8 @@ namespace Automaat
         {
             //Console.WriteLine("Hello World");
             //testTranstion();
-            Automaat<string> a1 = TestAutomaat.GetExampleSlide8Lesson2();
-            Automaat<string> a2 = TestAutomaat.GetExampleSlide14Lesson2();
+            //Automaat<string> a1 = TestAutomaat.GetExampleSlide8Lesson2();
+            //Automaat<string> a2 = TestAutomaat.GetExampleSlide14Lesson2();
 
             //a1.printTransitions();
             //Console.WriteLine("is automaat 1 a DFA: " + a1.IsDfa());
@@ -19,12 +19,12 @@ namespace Automaat
             //Console.WriteLine("is automaat 2 a DFA: " + a2.IsDfa());
 
             //PracL1ERepresentatie1();
-            PracL1Representatie2();
+            //PracL1Representatie2();
             //PracL1Representatie3();
             //PracL1Representatie3();
             //PracL1Representatie4();
             //Ndfa();
-
+            new TestRegExp().testLanguage();
             Console.ReadLine();
         }
                 

@@ -177,10 +177,8 @@ namespace Automaat
                 var newWord = word + _symbols.ElementAt(i);
                 Console.WriteLine(newWord);
                 if (Accepteer(newWord))
-                {
                     allWords.Add(newWord);
-                }
-                makeWords(newWord, length, ref allWords);
+                MakeWords(newWord, length, ref allWords);
             }
         }
     }
