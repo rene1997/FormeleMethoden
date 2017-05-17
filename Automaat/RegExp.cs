@@ -153,12 +153,32 @@ namespace Automaat
 
         public override string ToString()
         {
-            var returnString = terminals + ",";
-            if(left != null)
-                returnString += left.ToString();
-            if(right != null)
-                returnString += right.ToString();
-            return returnString;
+            string leftS = "", rightS = "", regS = "";
+            if (left != null) leftS = left.ToString();
+            if (right != null) rightS = right.ToString();
+
+            switch (_operator)
+            {
+                case Operator.PLUS:
+                    regS = $"({leftS})+";
+                    break;
+                case Operator.STAR:
+                    regS = $"({leftS})*";
+                    break;
+                case Operator.OR:
+                    regS = $"{leftS}|{rightS}";
+                    break;
+                case Operator.DOT:
+                    regS = $"{leftS}.{rightS}";
+                    break;
+                case Operator.ONE:
+                    regS = terminals;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            return regS;
         }
 
         public HashSet<char> GetAlphabet()
