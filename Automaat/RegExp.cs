@@ -11,8 +11,8 @@ namespace Automaat
     {
         public int Compare(string y, string x)
         {
-            String s1 = (string)y;
-            String s2 = (string)x;
+            var s1 = y;
+            var s2 = x;
             if (s1 == null || s2 == null) return -1;
 
             if (s1.Count() == s2.Count())
@@ -29,11 +29,11 @@ namespace Automaat
         // Daarnaast ook een operator definitie voor 1 keer repeteren (default)
         public enum Operator { PLUS, STAR, OR, DOT, ONE }
 
-        RegExp left;
-        RegExp right;
+        public RegExp left;
+        public RegExp right;
 
-        Operator _operator;
-        String terminals;        
+        public Operator _operator;
+        public String terminals;        
 
         public RegExp()
         {
@@ -149,5 +149,32 @@ namespace Automaat
             return languageResult;
         }
 
+        public override string ToString()
+        {
+            if(left != null)
+                left.ToString();
+            if(right != null)
+                right.ToString();
+            Console.WriteLine(terminals);
+            return terminals;
+        }
+
+        public HashSet<char> GetAlphabet()
+        {
+            var alphabet = new HashSet<char>();
+
+            if (left != null)
+            {
+                foreach (var c in left.GetAlphabet())
+                    alphabet.Add(c);
+            }
+
+            if (right != null)
+            {
+                foreach (var c in right.GetAlphabet())
+                    alphabet.Add(c);
+            }
+            return alphabet;
+        }
     }
 }

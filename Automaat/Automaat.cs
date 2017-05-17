@@ -8,11 +8,11 @@ namespace Automaat
     public class Automaat<T> where T : IComparable
     {
 
-        private readonly HashSet<Transition<T>> _transitions;
-        private readonly SortedSet<T> _states;
-        private readonly SortedSet<T> _startStates;
-        private readonly SortedSet<T> _finalStates;
-        private SortedSet<char> _symbols;
+        public readonly HashSet<Transition<T>> _transitions;
+        public readonly SortedSet<T> _states;
+        public readonly SortedSet<T> _startStates;
+        public readonly SortedSet<T> _finalStates;
+        public SortedSet<char> _symbols;
 
         public Automaat(): this(new SortedSet<char>())
         { }
