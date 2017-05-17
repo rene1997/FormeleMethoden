@@ -153,18 +153,19 @@ namespace Automaat
 
         public override string ToString()
         {
+            var returnString = terminals + ",";
             if(left != null)
-                left.ToString();
+                returnString += left.ToString();
             if(right != null)
-                right.ToString();
-            Console.WriteLine(terminals);
-            return terminals;
+                returnString += right.ToString();
+            return returnString;
         }
 
         public HashSet<char> GetAlphabet()
         {
             var alphabet = new HashSet<char>();
-
+            if(terminals != null && terminals != String.Empty)
+                alphabet.Add(terminals.ElementAt(0));
             if (left != null)
             {
                 foreach (var c in left.GetAlphabet())

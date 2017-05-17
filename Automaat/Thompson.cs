@@ -19,13 +19,8 @@ namespace Automaat
         public static Automaat<T> CreateAutomaat(RegExp reg)
         {
             char[] alphabet = reg.GetAlphabet().ToArray();
-            Console.WriteLine("alphabet: ");
-            foreach (char c in alphabet)
-            {
-                Console.WriteLine(c);
-            }
-            var automaat = new Automaat<T>();
-
+            var automaat = new Automaat<T>(alphabet);
+            HandleOperator(reg, ref automaat);
             foreach(var r in rules)
             {
                 if (r._operator == reg._operator)
@@ -33,8 +28,18 @@ namespace Automaat
                     //r.Use(reg, ref automaat);
                 }
             }
-            
             return automaat;
+        }
+
+        private static void HandleOperator(RegExp reg, ref Automaat<T> automaat)
+        {
+            foreach(var f in rules)
+            {
+                if (f._operator == reg._operator)
+                {
+                    f.Use(reg, ref automaat);
+                }
+            }
         }
     }
 }

@@ -14,17 +14,10 @@ namespace Automaat
             var regex = new RegExp("a");
             regex = regex.or(new RegExp("b"));
             regex = regex.star();
-            regex.ToString();
-
-
+            
             var automaat = Thompson<string>.CreateAutomaat(regex);
             automaat.PrintTransitions();
             var alphabet = automaat.GetAlphabet();
-            Console.WriteLine("aphabet:");
-            foreach(var s in alphabet)
-            {
-                Console.WriteLine(s);
-            }
         }
     }
 }
