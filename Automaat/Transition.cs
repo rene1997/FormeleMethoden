@@ -57,6 +57,11 @@ namespace Automaat
             return $"({this.FromState}, {this.Symbol}) --> {this.ToState}";
         }
 
+        public bool IsEpsilonTransition()
+        {
+            return Symbol == Epsilon;
+        }
+
         public override int GetHashCode()
         {
             return base.GetHashCode();

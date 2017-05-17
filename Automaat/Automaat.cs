@@ -135,17 +135,21 @@ namespace Automaat
             }
 
             var nextSymbol = leftoverSymbols.First();
-            var trans = GetTransitions(currentState, nextSymbol);
-            leftoverSymbols = leftoverSymbols.Skip(1).ToArray();
+            var transitions = GetTransitions(currentState, nextSymbol);
 
-            if (trans == null)
+            if (transitions.Count == 0)
             {
+                leftoverSymbols = leftoverSymbols.Skip(1).ToArray();
                 GetNextStates(currentState, leftoverSymbols, ref finalStates);
                 return;
             }
             
-            foreach (var t in trans)
+            foreach (var t in transitions)
             {
+                if (!t.IsEpsilonTransition())
+                {
+                    leftoverSymbols = leftoverSymbols.Skip(1).ToArray();
+                }
                 GetNextStates(t.ToState, leftoverSymbols, ref finalStates);
             }
         }
@@ -153,9 +157,9 @@ namespace Automaat
         private List<Transition<T>> GetTransitions(T state, char symbol)
         {
             var allTransitions = new List<Transition<T>>();
-            foreach (Transition<T> trans in _transitions)
+            foreach (var trans in _transitions)
             {
-                if (trans.FromState.Equals(state) && trans.Symbol.Equals(symbol))
+                if (trans.FromState.Equals(state) && (trans.Symbol.Equals(symbol) || trans.IsEpsilonTransition()))
                 {
                     allTransitions.Add(trans);
                 }

@@ -18,13 +18,14 @@ namespace Automaat
             //a2.printTransitions();
             //Console.WriteLine("is automaat 2 a DFA: " + a2.IsDfa());
 
-            //PracL1ERepresentatie1();
-            //PracL1Representatie2();
-            //PracL1Representatie3();
-            //PracL1Representatie3();
-            //PracL1Representatie4();
+//            PracL1ERepresentatie1();
+//            PracL1Representatie2();
+//            PracL1Representatie3();
+//            PracL1Representatie3();
+//            PracL1Representatie4();
             //Ndfa();
-            new TestRegExp().testLanguage();
+            //new TestRegExp().testLanguage();
+            testEpsilonNDFA();
             Console.ReadLine();
         }
                 
@@ -286,6 +287,29 @@ namespace Automaat
             testWords.Add(new Tuple<string, bool>("bbab", true));
 
             TestingAutomaat("testing code for ndfa", m, testWords);
+        }
+
+        static void testEpsilonNDFA()
+        {
+            char[] alphabet = { 'a', 'b' };
+            var m = new Automaat<string>(alphabet);
+
+            m.AddTransition(new Transition<string>("1", alphabet[0], "1"));
+            m.AddTransition(new Transition<string>("1", alphabet[0], "2"));
+            m.AddTransition(new Transition<string>("1", Transition<string>.Epsilon, "3"));
+
+            m.AddTransition(new Transition<string>("2", alphabet[1], "4"));
+            m.AddTransition(new Transition<string>("3", alphabet[1], "5"));
+
+            m.DefineAsStartState("1");
+            m.DefineAsFinalState("5");
+
+            var testWords = new List<Tuple<string, bool>>();
+            testWords.Add(new Tuple<string, bool>("b", true));
+            testWords.Add(new Tuple<string, bool>("ab", true));
+            testWords.Add(new Tuple<string, bool>("a", false));
+            testWords.Add(new Tuple<string, bool>("bba", true));
+            TestingAutomaat("Testing for epsilon transitions", m, testWords);
         }
     }
 }
