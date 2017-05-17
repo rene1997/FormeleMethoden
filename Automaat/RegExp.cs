@@ -15,10 +15,12 @@ namespace Automaat
             var s2 = x;
             if (s1 == null || s2 == null) return -1;
 
-            if (s1.Count() == s2.Count())
-            { return s1.CompareTo(s2); }
-            else
-            { return s1.Count() - s2.Count(); }
+            if (s1.Length == s2.Length)
+            {
+                return s1.CompareTo(s2);
+            }
+
+            return s1.Length - s2.Length;
         }
     }
 
