@@ -25,7 +25,7 @@ namespace Automaat
 //            PracL1Representatie4();
             //Ndfa();
             //new TestRegExp().testLanguage();
-            testEpsilonNDFA();
+//            testEpsilonNDFA();
             TestThompson.TestRegToAutomaat();
             Console.ReadLine();
         }
