@@ -8,7 +8,6 @@ namespace Automaat
 {
     public class Thompson
     {
-        
         public static Automaat<string> CreateAutomaat(RegExp reg)
         {
             var automaat = new Automaat<string>();
@@ -55,7 +54,6 @@ namespace Automaat
 
         public static void Regel3(RegExp reg, ref Automaat<string> a, ref int c, int leftState, int rightState)
         {
-            Console.WriteLine($"regel 3: {c}, {leftState}, {rightState}");
             var newState = c + 1;
             c = newState;
             ModifyAutomaat(reg.left,ref a, ref c, leftState, newState);
@@ -81,10 +79,10 @@ namespace Automaat
 
         public static void Regel5(RegExp reg, ref Automaat<string> a, ref int c, int leftState, int rightState)
         {
-            Console.WriteLine($"regel 5: {c}, {leftState}, {rightState}");
             var newLeftState = c + 1;
             var newRightState = newLeftState + 1;
             c = newRightState;
+
             a.AddTransition(new Transition<string>($"{leftState}",Transition<string>.Epsilon,$"{newLeftState}"));
             a.AddTransition(new Transition<string>($"{newRightState}",Transition<string>.Epsilon,$"{rightState}"));
             a.AddTransition(new Transition<string>($"{newRightState}", Transition<string>.Epsilon, $"{newLeftState}"));
