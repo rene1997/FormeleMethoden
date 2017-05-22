@@ -166,7 +166,7 @@ namespace Automaat
                     regS = $"({leftS})*";
                     break;
                 case Operator.OR:
-                    regS = $"{leftS}|{rightS}";
+                    regS = $"({leftS}|{rightS})";
                     break;
                 case Operator.DOT:
                     regS = $"{leftS}.{rightS}";
@@ -179,25 +179,6 @@ namespace Automaat
             }
 
             return regS;
-        }
-
-        public HashSet<char> GetAlphabet()
-        {
-            var alphabet = new HashSet<char>();
-            if(terminals != null && terminals != String.Empty)
-                alphabet.Add(terminals.ElementAt(0));
-            if (left != null)
-            {
-                foreach (var c in left.GetAlphabet())
-                    alphabet.Add(c);
-            }
-
-            if (right != null)
-            {
-                foreach (var c in right.GetAlphabet())
-                    alphabet.Add(c);
-            }
-            return alphabet;
         }
     }
 }
