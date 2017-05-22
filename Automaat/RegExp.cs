@@ -184,7 +184,8 @@ namespace Automaat
         public HashSet<char> GetAlphabet()
         {
             var alphabet = new HashSet<char>();
-
+            if(terminals != null && terminals != String.Empty)
+                alphabet.Add(terminals.ElementAt(0));
             if (left != null)
             {
                 foreach (var c in left.GetAlphabet())

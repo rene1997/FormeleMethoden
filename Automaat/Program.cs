@@ -73,7 +73,7 @@ namespace Automaat
             foreach(Tuple<string, bool> word in testWords)
             {
                 Console.WriteLine("----------");
-                Console.WriteLine($"Word: is {word.Item1} accepted?, expacted: {word.Item2}, result: {a.Accepteer(word.Item1)}");
+                Console.WriteLine($"Word: is {word.Item1} accepted?, expected: {word.Item2}, result: {a.Accepteer(word.Item1)}");
             }
             Console.WriteLine();
         }

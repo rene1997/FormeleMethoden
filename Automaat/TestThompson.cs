@@ -14,6 +14,7 @@ namespace Automaat
             var regex = new RegExp("a");
             regex = regex.or(new RegExp("b"));
             regex = regex.star();
+
             TestRegex(regex);
 
             regex = new RegExp("a");
