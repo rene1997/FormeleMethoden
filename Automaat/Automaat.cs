@@ -79,7 +79,6 @@ namespace Automaat
             {
                 foreach (char symbol in _symbols)
                 {
-                    // isDFA = isDFA && getToStates(from, symbol).size() == 1;
                     isDfa = isDfa && GetToStates(from, symbol).Count == 1;
                 }
             }
@@ -107,14 +106,13 @@ namespace Automaat
             var symbols = s.ToCharArray();
             foreach (char sym in symbols)
             {
-                //Console.Write(sym);
                 if (!_symbols.Contains(sym)) { return false; }
             }
-            //Console.WriteLine();
 
             var finalStates = new List<T>();
             foreach (var startState in _startStates)
             {
+                //Console.WriteLine("cState\tSymbolsOver");
                 GetNextStates(startState, symbols, ref finalStates);
             }
 
@@ -125,12 +123,20 @@ namespace Automaat
 
             return false;
         }
-
+        
         private void GetNextStates(T currentState, char[] leftoverSymbols, ref List<T> finalStates)
         {
+            //Console.Write($"{currentState}\t");
+            //leftoverSymbols.ToList().ForEach(ob => Console.Write($"{ob},"));
+            //Console.WriteLine();
+
             if (leftoverSymbols.Length == 0)
             {
                 finalStates.Add(currentState);
+                foreach (var t in GetEpsilonTransitions(currentState))
+                {
+                    GetNextStates(t.ToState, leftoverSymbols, ref finalStates);
+                }
                 return;
             }
 
@@ -139,8 +145,7 @@ namespace Automaat
 
             if (transitions.Count == 0)
             {
-                leftoverSymbols = leftoverSymbols.Skip(1).ToArray();
-                GetNextStates(currentState, leftoverSymbols, ref finalStates);
+                GetNextStates(currentState, leftoverSymbols.Skip(1).ToArray(), ref finalStates);
                 return;
             }
             
@@ -148,9 +153,12 @@ namespace Automaat
             {
                 if (!t.IsEpsilonTransition())
                 {
-                    leftoverSymbols = leftoverSymbols.Skip(1).ToArray();
+                    GetNextStates(t.ToState, leftoverSymbols.Skip(1).ToArray(), ref finalStates);
                 }
-                GetNextStates(t.ToState, leftoverSymbols, ref finalStates);
+                else
+                {
+                    GetNextStates(t.ToState, leftoverSymbols, ref finalStates);
+                }
             }
         }
 
@@ -165,6 +173,19 @@ namespace Automaat
                 }
             }
             return allTransitions;
+        }
+
+        private List<Transition<T>> GetEpsilonTransitions(T state)
+        {
+            var epsilonTransitions = new List<Transition<T>>();
+            foreach (var trans in _transitions)
+            {
+                if (trans.FromState.Equals(state) && trans.IsEpsilonTransition())
+                {
+                    epsilonTransitions.Add(trans);
+                }
+            }
+            return epsilonTransitions;
         }
 
         public List<string> GeefTaal(int length)

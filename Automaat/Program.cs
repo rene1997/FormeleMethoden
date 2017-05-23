@@ -18,15 +18,15 @@ namespace Automaat
             //a2.printTransitions();
             //Console.WriteLine("is automaat 2 a DFA: " + a2.IsDfa());
 
-//            PracL1ERepresentatie1();
-//            PracL1Representatie2();
-//            PracL1Representatie3();
-//            PracL1Representatie3();
-//            PracL1Representatie4();
+            //PracL1ERepresentatie1();
+            //PracL1Representatie2();
+            //PracL1Representatie3();
+            //PracL1Representatie3();
+            //PracL1Representatie4();
             //Ndfa();
             //new TestRegExp().testLanguage();
-//            testEpsilonNDFA();
-            TestThompson.TestRegToAutomaat();
+            //            testEpsilonNDFA();
+            //TestThompson.TestRegToAutomaat();
 
             Console.ReadLine();
         }
@@ -73,8 +73,10 @@ namespace Automaat
             
             foreach(Tuple<string, bool> word in testWords)
             {
+                var geaccepteerd = a.Accepteer(word.Item1);
+                Console.WriteLine($"Word: is {word.Item1} accepted?, expected: {word.Item2}, result: {geaccepteerd}");
+                if (word.Item2 != geaccepteerd) Console.WriteLine("Niet verwachte resultaat");
                 Console.WriteLine("----------");
-                Console.WriteLine($"Word: is {word.Item1} accepted?, expected: {word.Item2}, result: {a.Accepteer(word.Item1)}");
             }
             Console.WriteLine();
         }
