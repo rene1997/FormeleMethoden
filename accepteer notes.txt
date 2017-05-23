@@ -190,3 +190,5 @@ namespace Automaat
         } 
     }
 }
+
+Als er een overgang is geweest van symbolen kijken of er hierna nog epsilon overgangen zijn?(regex naar ndfa)

@@ -43,6 +43,11 @@ namespace Automaat
             {
                 Console.WriteLine(s);
             }
+            Console.WriteLine("talen die regex accepteert");
+            foreach (var s in reg.getLanguage(3))
+            {
+                Console.WriteLine($"Taal:{s}, wordt geaccepteerd:{automaat.Accepteer(s)}");
+            }
         }
     }
 }

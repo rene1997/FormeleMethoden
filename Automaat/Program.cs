@@ -27,6 +27,7 @@ namespace Automaat
             //new TestRegExp().testLanguage();
 //            testEpsilonNDFA();
             TestThompson.TestRegToAutomaat();
+
             Console.ReadLine();
         }
                 
