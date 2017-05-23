@@ -25,8 +25,8 @@ namespace Automaat
 //            PracL1Representatie4();
             //Ndfa();
             //new TestRegExp().testLanguage();
-//            testEpsilonNDFA();
-            TestThompson.TestRegToAutomaat();
+            testEpsilonNDFA();
+            //TestThompson.TestRegToAutomaat();
             Console.ReadLine();
         }
                 
@@ -311,6 +311,8 @@ namespace Automaat
             testWords.Add(new Tuple<string, bool>("a", false));
             testWords.Add(new Tuple<string, bool>("bba", true));
             TestingAutomaat("Testing for epsilon transitions", m, testWords);
+
+            NDFAToDFA<string>.MakeDFA(m);
         }
     }
 }

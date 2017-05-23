@@ -44,10 +44,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Automaat.cs" />
+    <Compile Include="NDFAToDFA.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegExp.cs" />
-    <Compile Include="Rule.cs" />
     <Compile Include="TestAutomaat.cs" />
     <Compile Include="TestRegExp.cs" />
     <Compile Include="TestThompson.cs" />
