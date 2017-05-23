@@ -169,7 +169,7 @@ namespace Automaat
                     regS = $"({leftS}|{rightS})";
                     break;
                 case Operator.DOT:
-                    regS = $"{leftS}.{rightS}";
+                    regS = $"({leftS}.{rightS})";
                     break;
                 case Operator.ONE:
                     regS = terminals;
