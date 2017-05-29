@@ -123,7 +123,88 @@ namespace Automaat
 
             return false;
         }
-        
+
+        public List<string> GeefTaal(int length)
+        {
+            var allWords = new List<string>();
+            MakeWords(string.Empty, length, ref allWords);
+            return allWords;
+        }
+
+        public void Minimize()
+        {
+            RemoveStates();
+            var blockTable = new HashSet<Block>();
+
+            //make final state block
+            var finalStateBlock = new Block() { isFinalState = true, rows = new SortedSet<Tuple<T, SortedSet<Tuple<char, T>>>>() };
+            foreach (var finalState in _finalStates)
+            {
+                var destinations = new SortedSet<Tuple<char, T>>();
+                foreach (var symbol in _symbols)
+                {
+                    destinations.Add(new Tuple<char, T>(symbol, GetToStates(finalState, symbol).First()));
+                }
+                finalStateBlock.rows.Add(new Tuple<T, SortedSet<Tuple<char, T>>>(finalState, destinations));                    
+            }
+            
+            //make first block
+            var aBlock = new Block() { isFinalState = false, rows = new SortedSet<Tuple<T, SortedSet<Tuple<char, T>>>>() };
+            foreach (var state in _states)
+            {
+                if(IsFinalState(state)) continue;
+                var destinations = new SortedSet<Tuple<char, T>>();
+                foreach(var symbol in _symbols)
+                {
+                    destinations.Add(new Tuple<char, T>(symbol, GetToStates(state, symbol).First()));
+                }
+                aBlock.rows.Add(new Tuple<T, SortedSet<Tuple<char, T>>>(state, destinations));
+            }
+            
+            blockTable.Add(aBlock);
+            blockTable.Add(finalStateBlock);
+
+            Console.WriteLine("first table created");
+        }
+
+        private struct Block
+        {
+            public bool isFinalState;
+            public SortedSet<Tuple<T,SortedSet<Tuple<char, T>>>> rows;
+        }
+
+        private bool IsFinalState(T state)
+        {
+            foreach(var fstate in _finalStates)
+                if (state.Equals(fstate)) return true;
+            return false;
+        }
+
+        private void MinimizeHopcroft(SortedSet<Block> blockTable)
+        {
+            bool isMinimized = true;
+            //split into table:
+            
+        }
+
+        /// <summary>
+        /// removes not accessible states
+        /// </summary>
+        private void RemoveStates()
+        {
+            for (int i = _states.Count -1; i >= 0; i --)
+            {
+                bool mustStay = false;
+                foreach(var s in _transitions)
+                    if (s.ToState.Equals(_states.ElementAt(i))) mustStay = true;
+
+                foreach(var s in _startStates)
+                    if (s.Equals(_states.ElementAt(i))) mustStay = true;
+                
+                if (!mustStay) _states.Remove(_states.ElementAt(i));
+            }
+        }
+
         private void GetNextStates(T currentState, char[] leftoverSymbols, ref List<T> finalStates)
         {
             //Console.Write($"{currentState}\t");
@@ -186,13 +267,6 @@ namespace Automaat
                 }
             }
             return epsilonTransitions;
-        }
-
-        public List<string> GeefTaal(int length)
-        {
-            var allWords = new List<string>();
-            MakeWords(string.Empty, length, ref allWords);
-            return allWords;
         }
 
         private void MakeWords(String word, int length, ref List<string> allWords)
