@@ -160,32 +160,100 @@ namespace Automaat
                 }
                 aBlock.rows.Add(new Tuple<T, SortedSet<Tuple<char, T>>>(state, destinations));
             }
-            
-            blockTable.Add(aBlock);
+
             blockTable.Add(finalStateBlock);
-
-            Console.WriteLine("first table created");
+            blockTable.Add(aBlock);
+            Console.WriteLine("first table created, going to minimize this shit");
+            MinimizeHopcroft(ref blockTable);
         }
 
-        private struct Block
+        private class Block
         {
-            public bool isFinalState;
-            public SortedSet<Tuple<T,SortedSet<Tuple<char, T>>>> rows;
+            public bool isFinalState = false;
+            public bool isMinimized = false;
+            public SortedSet<Tuple<T,SortedSet<Tuple<char, T>>>> rows = new SortedSet<Tuple<T, SortedSet<Tuple<char, T>>>>();
+
+            public void SetMinimized(bool isMinimized)
+            {
+                this.isMinimized = isMinimized;
+            }
         }
 
-        private bool IsFinalState(T state)
+        private void MinimizeHopcroft(ref HashSet<Block> blockTable)
         {
-            foreach(var fstate in _finalStates)
-                if (state.Equals(fstate)) return true;
-            return false;
+            if(CheckMinimized(ref blockTable)) return;
+
+            var newBlocks = new List<Block>();
+            for (var i = blockTable.Count -1; i >= 0; i--)
+            {
+                var block = blockTable.ElementAt(i);
+                if (block.isMinimized) continue;
+                var perfectRow = block.rows.First();
+                for(var j = block.rows.Count -1; j > 0; j--)
+                {
+                    var row = block.rows.ElementAt(j);
+                    //check if row has same destinations as perfect row
+                    if(!CompareRows(perfectRow, row)){
+                        //add to new block
+                    }
+                }
+                
+
+            }
         }
 
-        private void MinimizeHopcroft(SortedSet<Block> blockTable)
+        private bool CompareRows(Tuple<T, SortedSet<Tuple<char, T>>> item1, Tuple<T, SortedSet<Tuple<char, T>>> item2)
         {
-            bool isMinimized = true;
-            //split into table:
-            
+            var isEquals = true;
+            foreach(var symbol in item1.Item2)
+            {
+                
+            }
+
+            return isEquals;
         }
+
+        private bool CheckMinimized(ref HashSet<Block> blockTable)
+        {
+            for (var i = 0; i < blockTable.Count; i++)
+            {
+                var block = blockTable.ElementAt(i);
+                var destinations = new HashSet<Tuple<char, int>>();
+                foreach (var row in block.rows)
+                    foreach (var symbol in row.Item2)
+                        destinations.Add(new Tuple<char, int>(symbol.Item1, GetBlock(blockTable, symbol.Item2)));
+                block.SetMinimized(destinations.Count.Equals(_symbols.Count));
+            }
+            foreach(var b in blockTable)
+            {
+                if (!b.isMinimized) return false;
+            }
+            return true;
+        }
+
+        private int GetBlock(HashSet<Block> blockTable, T state)
+        {
+            for(var i = 0; i < blockTable.Count;i ++)
+            {
+                var block = blockTable.ElementAt(i);
+                foreach(var row in block.rows)
+                {
+                    if (row.Item1.Equals(state))
+                        return i;
+                }
+            }
+            return -1; 
+        }
+
+        //private Block getBlock(HashSet<Block> table, T state)
+        //{
+        //    var destinations = new HashSet<T>();
+        //    foreach(var symbol in destinations)
+        //    {
+
+        //    }
+        //    return table.First();
+        //}
 
         /// <summary>
         /// removes not accessible states
@@ -282,6 +350,13 @@ namespace Automaat
                     allWords.Add(newWord);
                 MakeWords(newWord, length, ref allWords);
             }
+        }
+
+        private bool IsFinalState(T state)
+        {
+            foreach (var fstate in _finalStates)
+                if (state.Equals(fstate)) return true;
+            return false;
         }
     }
 }
