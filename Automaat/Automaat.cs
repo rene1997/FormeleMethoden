@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -129,6 +128,21 @@ namespace Automaat
             var allWords = new List<string>();
             MakeWords(string.Empty, length, ref allWords);
             return allWords;
+        }
+
+        private void MakeWords(String word, int length, ref List<string> allWords)
+        {
+            if (word.Length >= length)
+                return;
+
+            for (int i = 0; i < _symbols.Count; i++)
+            {
+                var newWord = word + _symbols.ElementAt(i);
+                Console.WriteLine(newWord);
+                if (Accepteer(newWord))
+                    allWords.Add(newWord);
+                MakeWords(newWord, length, ref allWords);
+            }
         }
 
         public void Minimize()
@@ -311,7 +325,7 @@ namespace Automaat
             }
         }
 
-        private List<Transition<T>> GetTransitions(T state, char symbol)
+        public List<Transition<T>> GetTransitions(T state, char symbol)
         {
             var allTransitions = new List<Transition<T>>();
             foreach (var trans in _transitions)
@@ -324,7 +338,7 @@ namespace Automaat
             return allTransitions;
         }
 
-        private List<Transition<T>> GetEpsilonTransitions(T state)
+        public List<Transition<T>> GetEpsilonTransitions(T state)
         {
             var epsilonTransitions = new List<Transition<T>>();
             foreach (var trans in _transitions)
@@ -337,19 +351,15 @@ namespace Automaat
             return epsilonTransitions;
         }
 
-        private void MakeWords(String word, int length, ref List<string> allWords)
+        public Automaat<T> Reverse()
         {
-            if (word.Length >= length)
-                return;
+            var reversedAutomaat = new Automaat<T>(_symbols);
 
-            for (int i = 0; i < _symbols.Count; i++)
-            {
-                var newWord = word + _symbols.ElementAt(i);
-                Console.WriteLine(newWord);
-                if (Accepteer(newWord))
-                    allWords.Add(newWord);
-                MakeWords(newWord, length, ref allWords);
-            }
+            _startStates.ToList().ForEach(state => reversedAutomaat.DefineAsFinalState(state));
+            _finalStates.ToList().ForEach(state => reversedAutomaat.DefineAsStartState(state));
+            _transitions.ToList().ForEach(trans => reversedAutomaat.AddTransition(trans.Reverse()));
+            
+            return reversedAutomaat;
         }
 
         private bool IsFinalState(T state)
