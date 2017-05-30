@@ -31,11 +31,11 @@ namespace Automaat
             //DfaToDfa();
             //TestOptimizingDfa();
 
-            TestMinimize();
+            //TestMinimize();
             //TestThompson.TestRegToAutomaat();
             //            testEpsilonNDFA();
             //TestThompson.TestRegToAutomaat();
-            //TestRegToDfa();
+            TestRegToDfa();
 
             Console.ReadLine();
         }
@@ -439,7 +439,10 @@ namespace Automaat
             var ndfa = Thompson.CreateAutomaat(reg);
             var dfa = NdfatoDfa.MakeDfa(ndfa);
             dfa.PrintTransitions();
-            Console.WriteLine(dfa);
+
+            Console.WriteLine("reversed dfa");
+            var reversedDfa = dfa.Reverse();
+            reversedDfa.PrintTransitions();
         }
 
         static void TestMinimize()

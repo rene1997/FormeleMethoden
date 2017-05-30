@@ -282,5 +282,16 @@ namespace Automaat
             }
             return epsilonTransitions;
         }
+
+        public Automaat<T> Reverse()
+        {
+            var reversedAutomaat = new Automaat<T>(_symbols);
+
+            _startStates.ToList().ForEach(state => reversedAutomaat.DefineAsFinalState(state));
+            _finalStates.ToList().ForEach(state => reversedAutomaat.DefineAsStartState(state));
+            _transitions.ToList().ForEach(trans => reversedAutomaat.AddTransition(trans.Reverse()));
+            
+            return reversedAutomaat;
+        }
     }
 }

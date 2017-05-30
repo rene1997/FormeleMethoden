@@ -26,6 +26,11 @@ namespace Automaat
             this.Symbol = s;
             this.ToState = to;
         }
+
+        public Transition<T> Reverse()
+        {
+            return new Transition<T>(ToState, Symbol, FromState);
+        }
         
         public override bool Equals(Object other)
         {
