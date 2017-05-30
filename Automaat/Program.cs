@@ -25,14 +25,17 @@ namespace Automaat
             //PracL1Representatie4();
             //Ndfa();
             //new TestRegExp().testLanguage();
+
             //testEpsilonNDFA();
             //NdfaToDfa();
             //DfaToDfa();
             //TestOptimizingDfa();
+
+            TestMinimize();
             //TestThompson.TestRegToAutomaat();
             //            testEpsilonNDFA();
             //TestThompson.TestRegToAutomaat();
-            TestRegToDfa();
+            //TestRegToDfa();
 
             Console.ReadLine();
         }
@@ -437,6 +440,37 @@ namespace Automaat
             var dfa = NdfatoDfa.MakeDfa(ndfa);
             dfa.PrintTransitions();
             Console.WriteLine(dfa);
+        }
+
+        static void TestMinimize()
+        {
+            char[] alphabet = { 'a', 'b' };
+            var m = new Automaat<string>(alphabet);
+
+            m.AddTransition(new Transition<string>("0", alphabet[0], "0"));
+            m.AddTransition(new Transition<string>("0", alphabet[1], "1"));
+
+            m.AddTransition(new Transition<string>("1", alphabet[0], "2"));
+            m.AddTransition(new Transition<string>("1", alphabet[1], "1"));
+
+            m.AddTransition(new Transition<string>("2", alphabet[0], "0"));
+            m.AddTransition(new Transition<string>("2", alphabet[1], "3"));
+
+            m.AddTransition(new Transition<string>("3", alphabet[0], "4"));
+            m.AddTransition(new Transition<string>("3", alphabet[1], "1"));
+
+            m.AddTransition(new Transition<string>("4", alphabet[0], "5"));
+            m.AddTransition(new Transition<string>("4", alphabet[1], "3"));
+
+            m.AddTransition(new Transition<string>("5", alphabet[0], "0"));
+            m.AddTransition(new Transition<string>("5", alphabet[1], "3"));
+
+            m.DefineAsStartState("0");
+            m.DefineAsFinalState("2");
+            m.DefineAsFinalState("4");
+
+            m.Minimize();
+
         }
     }
 }
