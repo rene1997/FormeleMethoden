@@ -25,11 +25,15 @@ namespace Automaat
             //PracL1Representatie4();
             //Ndfa();
             //new TestRegExp().testLanguage();
-            testEpsilonNDFA();
+            //testEpsilonNDFA();
+            //NdfaToDfa();
+            //DfaToDfa();
+            //TestOptimizingDfa();
             //TestThompson.TestRegToAutomaat();
             //            testEpsilonNDFA();
             //TestThompson.TestRegToAutomaat();
-            
+            TestRegToDfa();
+
             Console.ReadLine();
         }
                 
@@ -68,7 +72,7 @@ namespace Automaat
             Console.WriteLine("False: "+test4);
         }
 
-        static void TestingAutomaat(string automaat_name, Automaat<string> a, List<Tuple<string, bool>> testWords)
+        static void TestingAutomaat<T>(string automaat_name, Automaat<T> a, List<Tuple<string, bool>> testWords) where T : IComparable
         {
             Console.WriteLine($"Testing automaat class, {automaat_name}");
             Console.WriteLine("Automaat is a DFA: " + a.IsDfa());            
@@ -310,14 +314,129 @@ namespace Automaat
             m.DefineAsStartState("1");
             m.DefineAsFinalState("5");
 
+            //woord bevat 1 b en eindigt op 1 b
             var testWords = new List<Tuple<string, bool>>();
             testWords.Add(new Tuple<string, bool>("b", true));
             testWords.Add(new Tuple<string, bool>("ab", true));
             testWords.Add(new Tuple<string, bool>("a", false));
-            testWords.Add(new Tuple<string, bool>("bba", true));
-            TestingAutomaat("Testing for epsilon transitions", m, testWords);
+            testWords.Add(new Tuple<string, bool>("bba", false));
+            testWords.Add(new Tuple<string, bool>("aaab", true));
+            //TestingAutomaat("Testing for epsilon transitions", m, testWords);
 
-            NDFAToDFA<string>.MakeDFA(m);
+            var dfa = NdfatoDfa.MakeDfa(m);
+            dfa.PrintTransitions();
+            TestingAutomaat("Testing for epsilon transitions", dfa , testWords);
+        }
+
+        static void NdfaToDfa()
+        {
+            char[] alphabet = { 'a', 'b' };
+            var m = new Automaat<int>(alphabet);
+
+            m.AddTransition(new Transition<int>(0, Transition<int>.Epsilon, 1));
+            m.AddTransition(new Transition<int>(0, Transition<int>.Epsilon, 7));
+
+            m.AddTransition(new Transition<int>(1, Transition<int>.Epsilon, 2));
+            m.AddTransition(new Transition<int>(1, Transition<int>.Epsilon, 4));
+
+            m.AddTransition(new Transition<int>(2, alphabet[0], 3));
+
+            m.AddTransition(new Transition<int>(3, Transition<int>.Epsilon, 6));
+
+            m.AddTransition(new Transition<int>(4, alphabet[1], 5));
+
+            m.AddTransition(new Transition<int>(5, Transition<int>.Epsilon, 6));
+
+            m.AddTransition(new Transition<int>(6, Transition<int>.Epsilon, 7));
+            m.AddTransition(new Transition<int>(6, Transition<int>.Epsilon, 1));
+
+            m.AddTransition(new Transition<int>(7, alphabet[0], 8));
+
+            m.AddTransition(new Transition<int>(8, alphabet[1], 9));
+
+            m.AddTransition(new Transition<int>(9, alphabet[1], 10));
+
+            m.DefineAsStartState(0);
+            m.DefineAsFinalState(10);
+
+            var dfa = NdfatoDfa.MakeDfa(m);
+            dfa.PrintTransitions();
+        }
+
+        static void DfaToDfa()
+        {
+            //eindigd op 'aa'
+            char[] alphabet = { 'a', 'b' };
+            var m = new Automaat<int>(alphabet);
+
+            m.AddTransition(new Transition<int>(1, alphabet[0], 2));
+            m.AddTransition(new Transition<int>(1, alphabet[1], 1));
+
+            m.AddTransition(new Transition<int>(2, alphabet[0], 3));
+            m.AddTransition(new Transition<int>(2, alphabet[1], 1));
+
+            m.AddTransition(new Transition<int>(3, alphabet[0], 3));
+            m.AddTransition(new Transition<int>(3, alphabet[1], 1));
+
+            m.DefineAsStartState(1);
+            m.DefineAsFinalState(3);
+
+            NdfatoDfa.MakeDfa(m);
+        }
+
+        static void TestOptimizingDfa()
+        {
+            char[] alphabet = { 'a', 'b' };
+            var m = new Automaat<string>(alphabet);
+
+            m.AddTransition(new Transition<string>("0", alphabet[0], "2"));
+            m.AddTransition(new Transition<string>("0", alphabet[1], "3"));
+
+            m.AddTransition(new Transition<string>("1", alphabet[0], "3"));
+            m.AddTransition(new Transition<string>("1", alphabet[1], "2"));
+
+            m.AddTransition(new Transition<string>("2", alphabet[0], "0"));
+            m.AddTransition(new Transition<string>("2", alphabet[1], "4"));
+
+            m.AddTransition(new Transition<string>("3", alphabet[0], "1"));
+            m.AddTransition(new Transition<string>("3", alphabet[1], "5"));
+
+            m.AddTransition(new Transition<string>("4", alphabet[0], "6"));
+            m.AddTransition(new Transition<string>("4", alphabet[1], "5"));
+
+            m.AddTransition(new Transition<string>("5", alphabet[0], "2"));
+            m.AddTransition(new Transition<string>("5", alphabet[1], "0"));
+
+            m.AddTransition(new Transition<string>("6", alphabet[0], "4"));
+            m.AddTransition(new Transition<string>("6", alphabet[1], "0"));
+
+            m.DefineAsStartState("0");
+
+            m.DefineAsFinalState("1");
+            m.DefineAsFinalState("3");
+            m.DefineAsFinalState("4");
+            m.DefineAsFinalState("6");
+
+            var testWords = new List<Tuple<string, bool>>();
+            testWords.Add(new Tuple<string, bool>("b", true));
+            testWords.Add(new Tuple<string, bool>("ba", true));
+            testWords.Add(new Tuple<string, bool>("bab", false));
+            testWords.Add(new Tuple<string, bool>("bba", false));
+            testWords.Add(new Tuple<string, bool>("babb", true));
+
+            TestingAutomaat("Testing not optimized automaat", m, testWords);
+        }
+
+        static void TestRegToDfa()
+        {
+            //reg: a|b
+            var reg = new RegExp("a").or(new RegExp("b"));
+            reg = reg.star();
+            Console.WriteLine(reg.ToString());
+            var ndfa = Thompson.CreateAutomaat(reg);
+            var dfa = NdfatoDfa.MakeDfa(ndfa);
+            dfa.PrintTransitions();
+            Console.WriteLine(dfa);
         }
     }
 }

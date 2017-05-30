@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -162,7 +161,7 @@ namespace Automaat
             }
         }
 
-        private List<Transition<T>> GetTransitions(T state, char symbol)
+        public List<Transition<T>> GetTransitions(T state, char symbol)
         {
             var allTransitions = new List<Transition<T>>();
             foreach (var trans in _transitions)
@@ -175,7 +174,7 @@ namespace Automaat
             return allTransitions;
         }
 
-        private List<Transition<T>> GetEpsilonTransitions(T state)
+        public List<Transition<T>> GetEpsilonTransitions(T state)
         {
             var epsilonTransitions = new List<Transition<T>>();
             foreach (var trans in _transitions)
@@ -187,7 +186,7 @@ namespace Automaat
             }
             return epsilonTransitions;
         }
-
+        
         public List<string> GeefTaal(int length)
         {
             var allWords = new List<string>();

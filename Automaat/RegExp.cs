@@ -160,10 +160,10 @@ namespace Automaat
             switch (_operator)
             {
                 case Operator.PLUS:
-                    regS = $"({leftS})+";
+                    regS = $"{leftS}+";
                     break;
                 case Operator.STAR:
-                    regS = $"({leftS})*";
+                    regS = $"{leftS}*";
                     break;
                 case Operator.OR:
                     regS = $"({leftS}|{rightS})";
