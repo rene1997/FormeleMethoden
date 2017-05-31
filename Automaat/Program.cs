@@ -31,11 +31,11 @@ namespace Automaat
             //DfaToDfa();
             //TestOptimizingDfa();
 
-            //TestMinimize();
+            TestMinimize();
             //TestThompson.TestRegToAutomaat();
             //            testEpsilonNDFA();
             //TestThompson.TestRegToAutomaat();
-            TestRegToDfa();
+            //TestRegToDfa();
 
             Console.ReadLine();
         }

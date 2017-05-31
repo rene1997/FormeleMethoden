@@ -177,8 +177,8 @@ namespace Automaat
 
             blockTable.Add(finalStateBlock);
             blockTable.Add(aBlock);
-            Console.WriteLine("first table created, going to minimize this shit");
             MinimizeHopcroft(ref blockTable);
+            Console.WriteLine("minimized");
         }
 
         private class Block
@@ -208,39 +208,65 @@ namespace Automaat
                     var row = block.rows.ElementAt(j);
                     //check if row has same destinations as perfect row
                     if(!CompareRows(perfectRow, row)){
-                        //add to new block
+                        bool added = false;
+                        foreach(var newblock in newBlocks)
+                        {
+                            if (CompareRows(newblock.rows.First(), row))
+                            {
+                                added = true;
+                                newblock.rows.Add(row);
+                            }
+                        }
+                        if (!added)
+                        {
+                            var newBlock = new Block() { isFinalState = block.isFinalState };
+                            newBlock.rows.Add(row);
+                            newBlocks.Add(newBlock);
+                        }
+                        block.rows.Remove(row);
                     }
                 }
-                
-
             }
+            foreach(var createdBlock in newBlocks)
+                blockTable.Add(createdBlock);
+
+            MinimizeHopcroft(ref blockTable);
         }
 
         private bool CompareRows(Tuple<T, SortedSet<Tuple<char, T>>> item1, Tuple<T, SortedSet<Tuple<char, T>>> item2)
         {
-            var isEquals = true;
-            foreach(var symbol in item1.Item2)
+            if (item1.Item2.Count != item2.Item2.Count) return false;
+            for (var i = 0; i < item1.Item2.Count; i++)
             {
-                
+                //check destination for each symbol:
+                var destionation1 = item1.Item2.ElementAt(i).Item2;
+                var destionation2 = item2.Item2.ElementAt(i).Item2;
+                if (!destionation1.Equals(destionation2)) return false;
             }
-
-            return isEquals;
+            return true;
         }
 
         private bool CheckMinimized(ref HashSet<Block> blockTable)
         {
-            for (var i = 0; i < blockTable.Count; i++)
-            {
-                var block = blockTable.ElementAt(i);
-                var destinations = new HashSet<Tuple<char, int>>();
-                foreach (var row in block.rows)
-                    foreach (var symbol in row.Item2)
-                        destinations.Add(new Tuple<char, int>(symbol.Item1, GetBlock(blockTable, symbol.Item2)));
-                block.SetMinimized(destinations.Count.Equals(_symbols.Count));
-            }
+            //for (var i = 0; i < blockTable.Count; i++)
+            //{
+            //    var block = blockTable.ElementAt(i);
+            //    var destinations = new HashSet<Tuple<char, int>>();
+            //    foreach (var row in block.rows)
+            //        foreach (var symbol in row.Item2)
+            //            destinations.Add(new Tuple<char, int>(symbol.Item1, GetBlock(blockTable, symbol.Item2)));
+            //    block.SetMinimized(destinations.Count.Equals(_symbols.Count));
+            //}
             foreach(var b in blockTable)
             {
-                if (!b.isMinimized) return false;
+                for (var i = 0;i < b.rows.Count; i ++)
+                {
+                    for(var j = 0; j < b.rows.Count; j++)
+                    {
+                        if (j == i) continue;
+                        if (!CompareRows(b.rows.ElementAt(i), b.rows.ElementAt(j))) return false;
+                    }
+                }
             }
             return true;
         }
