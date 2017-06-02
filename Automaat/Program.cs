@@ -35,11 +35,14 @@ namespace Automaat
             //DfaToDfa();
             //TestOptimizingDfa();
 
-            //TestMinimize();
+            TestMinimize();
+            
             //TestThompson.TestRegToAutomaat();
             //            testEpsilonNDFA();
             //TestThompson.TestRegToAutomaat();
             //TestRegToDfa();
+
+            Console.ReadLine(); 
         }
                 
         
@@ -65,16 +68,17 @@ namespace Automaat
             test2 = t1.Equals(t3);
             test3 = t1.Equals(t4);
             test4 = t1.Equals(t5);
-            Console.WriteLine("Results:");
+            //Console.WriteLine("Results:");
 
-            Console.WriteLine("Test 1, equal parameters");
-            Console.WriteLine("True: "+test1);
-            Console.WriteLine("Test 2, different toState");
-            Console.WriteLine("False: "+test2);
-            Console.WriteLine("Test 3, different fromState");
-            Console.WriteLine("False: "+test3);
-            Console.WriteLine("Test 4, different symbol");
-            Console.WriteLine("False: "+test4);
+            //Console.WriteLine("Test 1, equal parameters");
+            //Console.WriteLine("True: "+test1);
+            //Console.WriteLine("Test 2, different toState");
+            //Console.WriteLine("False: "+test2);
+            //Console.WriteLine("Test 3, different fromState");
+            //Console.WriteLine("False: "+test3);
+            //Console.WriteLine("Test 4, different symbol");
+            //Console.WriteLine("False: "+test4);
+            
         }
 
         static void TestingAutomaat<T>(string automaat_name, Automaat<T> a, List<Tuple<string, bool>> testWords) where T : IComparable
@@ -473,8 +477,11 @@ namespace Automaat
             m.DefineAsStartState("0");
             m.DefineAsFinalState("2");
             m.DefineAsFinalState("4");
+            //Graphviz.PrintGraph(m, "");
+            m.PrintTransitions();
+            var minimized = m.Minimize();
+            minimized.PrintTransitions();
 
-            m.Minimize();
 
         }
     }
