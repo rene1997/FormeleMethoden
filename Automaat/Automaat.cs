@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Resources;
 
 namespace Automaat
 {
@@ -138,7 +139,7 @@ namespace Automaat
             for (int i = 0; i < _symbols.Count; i++)
             {
                 var newWord = word + _symbols.ElementAt(i);
-                Console.WriteLine(newWord);
+
                 if (Accepteer(newWord))
                     allWords.Add(newWord);
                 MakeWords(newWord, length, ref allWords);
@@ -534,6 +535,118 @@ namespace Automaat
             foreach (var fstate in _finalStates)
                 if (state.Equals(fstate)) return true;
             return false;
+        }
+
+
+        private struct State : IComparable
+        {
+            public int Id { get; }
+            public T StateAutomaat1 { get; set; }
+            public T StateAutomaat2 { get; set; }
+
+            public State(int id, T a1, T a2)
+            {
+                this.Id = id;
+                this.StateAutomaat1 = a1;
+                this.StateAutomaat2 = a2;
+            }
+
+            public int CompareTo(object obj)
+            {
+                if (!(obj is State)) return -1;
+
+                var other = (State)obj;
+                return Id.CompareTo(other.Id);
+            }
+
+            public Boolean HaseSameStates(T a1, T a2)
+            {
+                return StateAutomaat1.Equals(a1) && StateAutomaat2.Equals(a2);
+            }
+        }
+        public static Automaat<int> operator &(Automaat<T> a1, Automaat<T> a2)
+        {
+            var newA = CombineAutomaat(a1, a2);
+            var a = new Automaat<int>(newA.GetAlphabet());
+
+            newA._startStates.ToList().ForEach(state => a.DefineAsStartState(state.Id));
+            
+            foreach (var state in newA._states)
+            {
+                if (a1.IsFinalState(state.StateAutomaat1) 
+                    && a2.IsFinalState(state.StateAutomaat2))
+                {
+                    a.DefineAsFinalState(state.Id);
+                }
+            }
+
+            return a;
+        }
+
+        public static Automaat<int> operator |(Automaat<T> a1, Automaat<T> a2)
+        {
+            var newA = CombineAutomaat(a1, a2);
+            var a = new Automaat<int>(newA.GetAlphabet());
+
+            newA._startStates.ToList().ForEach(state => a.DefineAsStartState(state.Id));
+
+            foreach (var state in newA._states)
+            {
+                if (a1.IsFinalState(state.StateAutomaat1)
+                    || a2.IsFinalState(state.StateAutomaat2))
+                {
+                    a.DefineAsFinalState(state.Id);
+                }
+            }
+
+            return a;
+        }
+
+        private static Automaat<State> CombineAutomaat(Automaat<T> a1, Automaat<T> a2)
+        {
+            var alphabet = new SortedSet<char>(a1.GetAlphabet());
+            a2.GetAlphabet().ToList().ForEach(c => alphabet.Add(c));
+            var newA = new Automaat<State>(alphabet);
+
+            var stateCounter = 0;
+            var beginState = new State(stateCounter, a1._startStates.First(), a2._startStates.First());
+            newA.DefineAsStartState(beginState);
+
+            FindNextState(ref newA, ref stateCounter, a1, a2, beginState);
+
+            return newA;
+        }
+
+        private static void FindNextState(ref Automaat<State> a, ref int counter, Automaat<T> a1, Automaat<T> a2, State s)
+        {
+            foreach (var c in a.GetAlphabet())
+            {
+                var a1State = a1.GetTransitions(s.StateAutomaat1, c).First().ToState;
+                var a2State = a2.GetTransitions(s.StateAutomaat2, c).First().ToState;
+                var newState = default(State);
+                var stateExsists = false;
+
+                foreach (var state in a._states)
+                {
+                    if (!state.HaseSameStates(a1State, a2State)) continue;
+                    newState = state;
+                    stateExsists = true;
+                    break;
+                }
+
+                if (!stateExsists)
+                {
+                    newState = new State(++counter, a1State, a2State);
+                    a.AddTransition(new Transition<State>(s, c, newState));
+                    FindNextState(ref a, ref counter, a1, a2, newState);
+                }
+                else
+                {
+                    a.AddTransition(new Transition<State>(s, c, newState));
+                }
+                
+            }
+
         }
     }
 }

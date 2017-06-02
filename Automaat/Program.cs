@@ -9,8 +9,8 @@ namespace Automaat
         {
             //var App = new App();
             //App.Start();
-            new TestRegGram();
-            Console.ReadLine();
+            //new TestRegGram();
+
             //Console.WriteLine("Hello World");
             //testTranstion();
             //Automaat<string> a1 = TestAutomaat.GetExampleSlide8Lesson2();
@@ -35,13 +35,14 @@ namespace Automaat
             //DfaToDfa();
             //TestOptimizingDfa();
 
-            TestMinimize();
-            
+            //TestMinimize();
+
             //TestThompson.TestRegToAutomaat();
             //            testEpsilonNDFA();
             //TestThompson.TestRegToAutomaat();
             //TestRegToDfa();
 
+            TestSamenvoegen();
             Console.ReadLine(); 
         }
                 
@@ -481,8 +482,50 @@ namespace Automaat
             m.PrintTransitions();
             var minimized = m.Minimize();
             minimized.PrintTransitions();
+        }
 
+        static void TestSamenvoegen()
+        {
+            char[] alphabet = {'a', 'b'};
+            var dfa1 = new Automaat<int>(alphabet);
 
+            dfa1.AddTransition(new Transition<int>(1, alphabet[0], 2));
+            dfa1.AddTransition(new Transition<int>(1, alphabet[1], 1));
+
+            dfa1.AddTransition(new Transition<int>(2, alphabet[0], 1));
+            dfa1.AddTransition(new Transition<int>(2, alphabet[1], 2));
+
+            dfa1.DefineAsStartState(1);
+            dfa1.DefineAsFinalState(1);
+
+            var dfa2 = new Automaat<int>(alphabet);
+
+            dfa2.AddTransition(new Transition<int>(1, alphabet[0], 1));
+            dfa2.AddTransition(new Transition<int>(1, alphabet[1], 2));
+
+            dfa2.AddTransition(new Transition<int>(2, alphabet[0], 1));
+            dfa2.AddTransition(new Transition<int>(2, alphabet[1], 3));
+
+            dfa2.AddTransition(new Transition<int>(3, alphabet[0], 1));
+            dfa2.AddTransition(new Transition<int>(3, alphabet[1], 4));
+
+            dfa2.AddTransition(new Transition<int>(4, alphabet[0], 4));
+            dfa2.AddTransition(new Transition<int>(4, alphabet[1], 4));
+
+            dfa2.DefineAsStartState(1);
+
+            dfa2.DefineAsFinalState(1);
+            dfa2.DefineAsFinalState(2);
+
+            var and = dfa1 & dfa2;
+            var or = dfa1 | dfa2;
+
+            var testWords = new List<Tuple<string, bool>>();
+            dfa1.GeefTaal(4).ForEach(s => testWords.Add(new Tuple<string, bool>(s, true)));
+            dfa2.GeefTaal(4).ForEach(s => testWords.Add(new Tuple<string, bool>(s, true)));
+
+            TestingAutomaat("And dfa", and, testWords);
+            TestingAutomaat("Or dfa", or, testWords);
         }
     }
 }
