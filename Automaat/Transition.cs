@@ -54,7 +54,7 @@ namespace Automaat
             int symbolCmp = Symbol.CompareTo(other.Symbol);
             int toCmp = ToState.CompareTo(other.ToState);
 
-            return (fromCmp != 0 ? fromCmp : (symbolCmp != 0 ? symbolCmp : toCmp));
+            return fromCmp != 0 ? fromCmp : (symbolCmp != 0 ? symbolCmp : toCmp);
         }
 
         public override string ToString()

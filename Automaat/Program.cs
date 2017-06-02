@@ -7,6 +7,10 @@ namespace Automaat
     {
         static void Main(string[] args)
         {
+            //var App = new App();
+            //App.Start();
+            new TestRegGram();
+            Console.ReadLine();
             //Console.WriteLine("Hello World");
             //testTranstion();
             //Automaat<string> a1 = TestAutomaat.GetExampleSlide8Lesson2();
@@ -35,9 +39,7 @@ namespace Automaat
             //TestThompson.TestRegToAutomaat();
             //            testEpsilonNDFA();
             //TestThompson.TestRegToAutomaat();
-            TestRegToDfa();
-
-            Console.ReadLine();
+            //TestRegToDfa();
         }
                 
         

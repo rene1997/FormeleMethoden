@@ -47,9 +47,12 @@
     <Compile Include="NdfatoDfa.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PRule.cs" />
     <Compile Include="RegExp.cs" />
+    <Compile Include="RegGram.cs" />
     <Compile Include="TestAutomaat.cs" />
     <Compile Include="TestRegExp.cs" />
+    <Compile Include="TestRegGram.cs" />
     <Compile Include="TestThompson.cs" />
     <Compile Include="Thompson.cs" />
     <Compile Include="Transition.cs" />
