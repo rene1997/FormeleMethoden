@@ -145,155 +145,296 @@ namespace Automaat
             }
         }
 
-        public void Minimize()
+        public Automaat<char> Minimize()
         {
             RemoveStates();
-            var blockTable = new HashSet<Block>();
+            var table = new Table(this);
+            table.Minimize();
+            table.Print();
+            return table.ToAutomaat();
+        }
 
-            //make final state block
-            var finalStateBlock = new Block() { isFinalState = true, rows = new SortedSet<Tuple<T, SortedSet<Tuple<char, T>>>>() };
-            foreach (var finalState in _finalStates)
+        private class Table
+        {
+            public Automaat<T> Automaat;
+            public SortedSet<char> Alphabet = new SortedSet<char>();
+            public List<Block> Blocks = new List<Block>();
+
+            public Table(Automaat<T> automaat)
             {
-                var destinations = new SortedSet<Tuple<char, T>>();
-                foreach (var symbol in _symbols)
-                {
-                    destinations.Add(new Tuple<char, T>(symbol, GetToStates(finalState, symbol).First()));
-                }
-                finalStateBlock.rows.Add(new Tuple<T, SortedSet<Tuple<char, T>>>(finalState, destinations));                    
+                Automaat = automaat;
+                automaat._symbols.ToList().ForEach(s => Alphabet.Add(s));
+                InitBlocks();
+                Blocks.ForEach(b => b.FindDestinations());
             }
             
-            //make first block
-            var aBlock = new Block() { isFinalState = false, rows = new SortedSet<Tuple<T, SortedSet<Tuple<char, T>>>>() };
-            foreach (var state in _states)
+
+            public void Minimize()
             {
-                if(IsFinalState(state)) continue;
-                var destinations = new SortedSet<Tuple<char, T>>();
-                foreach(var symbol in _symbols)
+                Blocks.ForEach(b => b.FindDestinations());
+                var isMinimized = true;
+                foreach(var block in Blocks)
                 {
-                    destinations.Add(new Tuple<char, T>(symbol, GetToStates(state, symbol).First()));
+                    if (!block.Minimize())
+                    {
+                        isMinimized = false;
+                    }
                 }
-                aBlock.rows.Add(new Tuple<T, SortedSet<Tuple<char, T>>>(state, destinations));
-            }
-
-            blockTable.Add(finalStateBlock);
-            blockTable.Add(aBlock);
-            MinimizeHopcroft(ref blockTable);
-            Console.WriteLine("minimized");
-        }
-
-        private class Block
-        {
-            public bool isFinalState = false;
-            public bool isMinimized = false;
-            public SortedSet<Tuple<T,SortedSet<Tuple<char, T>>>> rows = new SortedSet<Tuple<T, SortedSet<Tuple<char, T>>>>();
-
-            public void SetMinimized(bool isMinimized)
-            {
-                this.isMinimized = isMinimized;
-            }
-        }
-
-        private void MinimizeHopcroft(ref HashSet<Block> blockTable)
-        {
-            if(CheckMinimized(ref blockTable)) return;
-
-            var newBlocks = new List<Block>();
-            for (var i = blockTable.Count -1; i >= 0; i--)
-            {
-                var block = blockTable.ElementAt(i);
-                if (block.isMinimized) continue;
-                var perfectRow = block.rows.First();
-                for(var j = block.rows.Count -1; j > 0; j--)
+                if (!isMinimized)
                 {
-                    var row = block.rows.ElementAt(j);
-                    //check if row has same destinations as perfect row
-                    if(!CompareRows(perfectRow, row)){
-                        bool added = false;
-                        foreach(var newblock in newBlocks)
+                    for(int i = Blocks.Count -1; i >= 0; i--)
+                    {
+                        Blocks[i].SplitBlock();
+                    }
+                }
+
+            }
+
+            public void Print()
+            {
+                var alphabet = String.Empty;
+                Alphabet.ToList().ForEach(c => alphabet += c + ",");
+                Console.WriteLine($"table:\nalphabet: {alphabet.Substring(0,alphabet.Length -1)}");
+                Blocks.ForEach(b => b.Print());
+            }
+
+            public Automaat<char> ToAutomaat()
+            {
+                var automaat = new Automaat<char>(Alphabet);
+                foreach(var block in Blocks)
+                {
+                    foreach(char c in Alphabet)
+                    {
+                        automaat.AddTransition(new Transition<char>(block.Identifier, c, block.Rows[0].FindDestination(c).Identifier));
+                    }
+                    Automaat._startStates.ToList().ForEach(startstate =>
+                    {
+                        block.States.ToList().ForEach(state =>
                         {
-                            if (CompareRows(newblock.rows.First(), row))
+                            if (state.Equals(startstate))
+                                automaat.DefineAsStartState(block.Identifier);
+                        });
+                    });
+                    if (block.isFinalState)
+                        automaat.DefineAsFinalState(block.Identifier);
+                }
+                
+                return automaat;
+            }
+
+            private void InitBlocks()
+            {
+                //finalStates
+                Blocks.Add(new Block(this, Automaat._finalStates, 'A') { isFinalState = true});
+
+                //non finalstates:
+                var states = new SortedSet<T>();
+                foreach(T state in Automaat._states)
+                {
+                    var isFinalState = false;
+                    Automaat._finalStates.ToList().ForEach(s => { if (s.Equals(state)) isFinalState = true;  });
+                    if (!isFinalState) states.Add(state);
+                }
+                Blocks.Add(new Block(this, states, 'B'));
+            }
+        }
+
+        private class Block 
+        {
+            public List<Row> Rows = new List<Row>();
+            public char Identifier;
+            public SortedSet<T> States = new SortedSet<T>();
+            public bool isFinalState { get; set; }
+            private Table table;
+            private Automaat<T> automaat;
+            
+            public Block(Table table, List<Row> rows, char id)
+            {
+                this.table = table;
+                this.automaat = table.Automaat;
+                this.Identifier = id;
+                this.Rows = rows;
+                rows.ForEach(r => States.Add(r.State));
+            }
+
+            public Block(Table table, SortedSet<T> states, char id)
+            {
+                this.table = table;
+                this.automaat = table.Automaat;
+                this.Identifier = id;
+                this.States = states;
+
+                var rowId = 0;
+                states.ToList().ForEach(x => { Rows.Add(new Row(table, x, rowId));rowId++;});
+            }
+
+            public void AddRow(Row row)
+            {
+                Rows.Add(row);
+                States.Add(row.State);
+            }
+
+            public void Print()
+            {
+                Console.WriteLine($"block {Identifier}:");
+                Rows.ForEach(r => r.Print());
+            }
+            
+            public void FindDestinations()
+            {
+                Rows.ForEach(r => r.FindDestinations());
+            }
+
+            public bool Minimize()
+            {
+                bool isMinimized = true;
+                foreach(var c in table.Alphabet)
+                {
+                    var destinations = new HashSet<Block>();
+                    Rows.ForEach(r => destinations.Add(r.FindDestination(c)));
+                    if(destinations.Count > 1)
+                        isMinimized = false;
+                }
+                return isMinimized;
+            }
+
+            public bool CompareRow(Row row)
+            {
+                bool isSame = true;
+                Rows.ForEach(r => { if (!r.Compare(row)) isSame = false; ; });
+                return isSame;
+                
+            }
+
+            public void SplitBlock()
+            {
+                var newBlocks = new List<Block>();
+                var perfectRow = Rows[0];
+                for(var i = Rows.Count -1; i > 0; i--)
+                {
+                    var row = Rows[i];
+                    if (!row.Compare(perfectRow)){
+                        bool isAdded = false;
+                        foreach(var newBlock in newBlocks)
+                        {
+                            if (newBlock.CompareRow(row))
                             {
-                                added = true;
-                                newblock.rows.Add(row);
+                                newBlock.AddRow(row);
+                                isAdded = true;
                             }
                         }
-                        if (!added)
+                        if (!isAdded)
                         {
-                            var newBlock = new Block() { isFinalState = block.isFinalState };
-                            newBlock.rows.Add(row);
-                            newBlocks.Add(newBlock);
+                            var rows = new List<Row>();
+                            rows.Add(row);
+                            var NewBlock = new Block(table, rows, (char)((int)table.Blocks.Last().Identifier + 1));
+                            NewBlock.isFinalState = isFinalState;
+                            newBlocks.Add(NewBlock);
                         }
-                        block.rows.Remove(row);
+                        Rows.RemoveAt(i);
+                        States.Remove(row.State);
                     }
-                }
-            }
-            foreach(var createdBlock in newBlocks)
-                blockTable.Add(createdBlock);
-
-            MinimizeHopcroft(ref blockTable);
-        }
-
-        private bool CompareRows(Tuple<T, SortedSet<Tuple<char, T>>> item1, Tuple<T, SortedSet<Tuple<char, T>>> item2)
-        {
-            if (item1.Item2.Count != item2.Item2.Count) return false;
-            for (var i = 0; i < item1.Item2.Count; i++)
-            {
-                //check destination for each symbol:
-                var destionation1 = item1.Item2.ElementAt(i).Item2;
-                var destionation2 = item2.Item2.ElementAt(i).Item2;
-                if (!destionation1.Equals(destionation2)) return false;
-            }
-            return true;
-        }
-
-        private bool CheckMinimized(ref HashSet<Block> blockTable)
-        {
-            //for (var i = 0; i < blockTable.Count; i++)
-            //{
-            //    var block = blockTable.ElementAt(i);
-            //    var destinations = new HashSet<Tuple<char, int>>();
-            //    foreach (var row in block.rows)
-            //        foreach (var symbol in row.Item2)
-            //            destinations.Add(new Tuple<char, int>(symbol.Item1, GetBlock(blockTable, symbol.Item2)));
-            //    block.SetMinimized(destinations.Count.Equals(_symbols.Count));
-            //}
-            foreach(var b in blockTable)
-            {
-                for (var i = 0;i < b.rows.Count; i ++)
-                {
-                    for(var j = 0; j < b.rows.Count; j++)
+                    else
                     {
-                        if (j == i) continue;
-                        if (!CompareRows(b.rows.ElementAt(i), b.rows.ElementAt(j))) return false;
+                        Console.WriteLine("");
                     }
                 }
+                newBlocks.ForEach(b => table.Blocks.Add(b));
             }
-            return true;
         }
 
-        private int GetBlock(HashSet<Block> blockTable, T state)
+        private class Row 
         {
-            for(var i = 0; i < blockTable.Count;i ++)
+            public int Identifier;
+            public T State;
+            public List<Destination> Destinations = new List<Destination>();
+            private Table table;
+
+            public Row(Table table, T state, int id)
             {
-                var block = blockTable.ElementAt(i);
-                foreach(var row in block.rows)
+                this.table = table;
+                this.State = state;
+                this.Identifier = id;
+                
+                foreach(var c in table.Alphabet)
                 {
-                    if (row.Item1.Equals(state))
-                        return i;
+                    table.Automaat.GetToStates(state, c).ForEach(s => Destinations.Add(new Destination(table,c,s)));
                 }
             }
-            return -1; 
+
+            public void Print()
+            {
+                Console.WriteLine($"\trow: {Identifier} \n\t\tstate: {State}");
+                Destinations.ForEach(d => d.Print(State));
+            }
+
+            public Block FindDestination(char symbol)
+            {
+                foreach(var d in Destinations)
+                {
+                    if (d.Symbol.Equals(symbol))
+                        return d.TargetBlock;
+                }
+                return null;
+            }
+
+            public void FindDestinations()
+            {
+                Destinations.ForEach(d => d.FindDestination());
+            }
+
+            public bool Compare(Row row)
+            {
+                foreach(char c in table.Alphabet)
+                {
+                    var target1 = FindDestination(c);
+                    var target2 = row.FindDestination(c);
+                    if (!target1.Equals(target2))
+                        return false;
+                }
+                return true;
+            }
         }
 
-        //private Block getBlock(HashSet<Block> table, T state)
-        //{
-        //    var destinations = new HashSet<T>();
-        //    foreach(var symbol in destinations)
-        //    {
+        private class Destination
+        {
+            public char Symbol;
+            public T Target;
+            public Block TargetBlock;
+            private Table table;
 
-        //    }
-        //    return table.First();
-        //}
+            public Destination(Table table, char symbol, T target)
+            {
+                this.table = table;
+                Symbol = symbol;
+                Target = target;
+            }
+
+            public Block FindDestination()
+            {
+                foreach(var b in table.Blocks)
+                {
+                    foreach(var state in b.States)
+                    {
+                        if (state.Equals(Target)) {
+                            TargetBlock = b;
+                            return b;
+                        }
+                            
+                    }
+                }
+                return null;
+            }
+
+            public void Print(T state)
+            {
+                if (TargetBlock != null)
+                    Console.WriteLine($"\t\tdestination: \tinput:{Symbol} \t target: {Target} / {TargetBlock.Identifier}");
+                else
+                    Console.WriteLine($"\t\tdestination: \tinput:{Symbol} \t target: {Target}");
+            }
+        }
+
 
         /// <summary>
         /// removes not accessible states
