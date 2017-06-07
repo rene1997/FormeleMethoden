@@ -5,6 +5,7 @@ namespace Automaat
 {
     class Program
     {
+        private static char[] Alphabet = {'a', 'b'};
         static void Main(string[] args)
         {
             //var App = new App();
@@ -42,10 +43,11 @@ namespace Automaat
             //TestRegToDfa();
 
 
-            
+
             //TestSamenvoegen();
             GramToNdfaAndReverse();
-            TestRegCompare();
+            //TestRegCompare();
+            TestNdfaGraphviz();
             Console.ReadLine(); 
         }
 
@@ -534,7 +536,7 @@ namespace Automaat
             var and = dfa1 & dfa2;
             var or = dfa1 | dfa2;
 
-            Graphviz.PrintGraph(and, "C:\\Users\\remco\\Documents\\School\\Technische informatica jaar 3\\3.4\\formele methoden\\automaten pictures\\test");
+            Graphviz.PrintGraph(and, "and");
 
             var testWords = new List<Tuple<string, bool>>();
             dfa1.GeefTaal(4).ForEach(s => testWords.Add(new Tuple<string, bool>(s, true)));
@@ -555,19 +557,20 @@ namespace Automaat
 
             ndfa.AddTransition(new Transition<int>(1, alphabet[0], 2));
 
-            ndfa.AddTransition(new Transition<int>(2, alphabet[0], 2));
-            ndfa.AddTransition(new Transition<int>(2, alphabet[1], 2));
+            ndfa.AddTransition(new Transition<int>(2, alphabet[0]));
+            ndfa.AddTransition(new Transition<int>(2, alphabet[1]));
 
             ndfa.AddTransition(new Transition<int>(3, alphabet[1], 4));
 
-            ndfa.AddTransition(new Transition<int>(4, alphabet[0], 4));
-            ndfa.AddTransition(new Transition<int>(4, alphabet[1], 4));
-            //Graphviz.PrintGraph(ndfa, "C:\\Users\\remco\\Documents\\School\\Technische informatica jaar 3\\3.4\\formele methoden\\automaten pictures\\ndfaToGram");
+            ndfa.AddTransition(new Transition<int>(4, alphabet[0]));
+            ndfa.AddTransition(new Transition<int>(4, alphabet[1]));
 
             ndfa.DefineAsStartState(0);
 
             ndfa.DefineAsFinalState(2);
             ndfa.DefineAsFinalState(4);
+
+            Graphviz.PrintGraph(ndfa, "ndfaToGram");
 
             var gram = RegGram<int>.NdfaToRegGram(ndfa);
             Console.WriteLine(gram.ToString());
@@ -580,6 +583,26 @@ namespace Automaat
             var reg2 = new RegExp("a").dot(new RegExp("a").star()).dot(new RegExp("b").dot(new RegExp("b").star()));
             reg2.ViewImage(false);
             Console.WriteLine(reg1.Equals(reg2));
+        }
+
+        private static void TestNdfaGraphviz()
+        {
+            var ndfa = new Automaat<string>(Alphabet);
+
+            ndfa.AddTransition(new Transition<string>("0", Alphabet[0], "0"));
+            ndfa.AddTransition(new Transition<string>("0", Alphabet[0], "1"));
+            ndfa.AddTransition(new Transition<string>("0", Alphabet[1], "3"));
+
+            ndfa.AddTransition(new Transition<string>("1", Alphabet[0], "1"));
+            ndfa.AddTransition(new Transition<string>("1", Alphabet[1], "2"));
+
+            ndfa.AddTransition(new Transition<string>("3", Alphabet[0]));
+            ndfa.AddTransition(new Transition<string>("3", Alphabet[1]));
+
+            ndfa.DefineAsStartState("0");
+            ndfa.DefineAsFinalState("2");
+
+            Graphviz.PrintGraph(ndfa, "ndfaTest");
         }
     }
 }
