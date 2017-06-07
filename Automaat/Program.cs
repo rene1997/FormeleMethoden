@@ -481,7 +481,7 @@ namespace Automaat
             m.DefineAsStartState("0");
             m.DefineAsFinalState("2");
             m.DefineAsFinalState("4");
-            //Graphviz.PrintGraph(m, "");
+            Graphviz.PrintGraph(m, "C:\\Users\\renek\\Documents\\FormeleMethoden\\test.png");
             Console.WriteLine("first automate:");
             m.PrintTransitions();
             var minimized = m.MinimizeHopCroft();
@@ -491,7 +491,6 @@ namespace Automaat
             var otherMinimized = m.MinimizeReverse();
             Console.WriteLine("other minimization:");
             otherMinimized.PrintTransitions();
-
         }
 
         static void TestSamenvoegen()

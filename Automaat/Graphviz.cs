@@ -42,7 +42,7 @@ namespace Automaat
                 getProcessStartInfoQuery,
                 registerLayoutPluginCommand);
 
-            byte[] output = wrapper.GenerateGraph("digraph{ a->b; b->c; c->a; }", Enums.GraphReturnType.Jpg);
+            byte[] output = wrapper.GenerateGraph(data, Enums.GraphReturnType.Jpg);
             System.IO.File.WriteAllBytes(filename + ".jpg", output);
         }
     }
