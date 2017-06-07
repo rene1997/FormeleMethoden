@@ -10,14 +10,11 @@ namespace Automaat
     {
         public static void PrintGraph<T>(Automaat<T> data, string filename) where T : IComparable
         {
-            string s = "digraph{ ";
-            s += "node [shape = doublecircle];";
-                        
-            foreach (var t in data._finalStates)
-            {
-                s += " " + ("S" + t) + " ";
-            }
-            s += ";  ";
+            var s = "digraph{ ";
+
+            s += GetStartStatesData(data);
+            s += GetFinalStatesData(data);
+
             s += "node [shape = circle];";
 
             foreach (var t in data._transitions)
@@ -29,6 +26,37 @@ namespace Automaat
             //Console.WriteLine(s);
 
             GenerateGraphFile(s, filename);
+        }
+
+        private static string GetFinalStatesData<T>(Automaat<T> a) where T : IComparable
+        {
+            if (a._finalStates.Count == 0) return "";
+
+            var s = "node [shape = doublecircle];";
+
+            foreach (var t in a._finalStates)
+            {
+                s += " " + ("S" + t) + " ";
+            }
+            s += ";  ";
+
+            return s;
+        }
+
+        private static string GetStartStatesData<T>(Automaat<T> a) where T : IComparable
+        {
+            if (a._startStates.Count == 0) return "";
+            
+            var s = "node [shape=point]";
+            s += "node0 [label=\"\"];";
+
+            s += "node [shape = circle];";
+            foreach (var state in a._startStates)
+            {
+                s += $" node0:\"\" -> S{state} ";
+            }
+
+            return s;
         }
 
         static void GenerateGraphFile(string data, string filename)

@@ -599,7 +599,12 @@ namespace Automaat
             ndfa.AddTransition(new Transition<string>("3", Alphabet[0]));
             ndfa.AddTransition(new Transition<string>("3", Alphabet[1]));
 
+            ndfa.AddTransition(new Transition<string>("4", Alphabet[0], "1"));
+            ndfa.AddTransition(new Transition<string>("4", Alphabet[1]));
+
             ndfa.DefineAsStartState("0");
+            ndfa.DefineAsStartState("4");
+
             ndfa.DefineAsFinalState("2");
 
             Graphviz.PrintGraph(ndfa, "ndfaTest");
