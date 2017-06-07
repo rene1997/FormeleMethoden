@@ -19,7 +19,7 @@ namespace Automaat
             //Console.WriteLine("is automaat 2 a DFA: " + a2.IsDfa());
 
             //PracL1ERepresentatie1();
-            //PracL1Representatie2();
+            PracL1Representatie2();
             //PracL1Representatie3();
             //PracL1Representatie3();
             //PracL1Representatie4();
@@ -31,7 +31,7 @@ namespace Automaat
             //DfaToDfa();
             //TestOptimizingDfa();
 
-            TestMinimize();
+            //TestMinimize();
             
             //TestThompson.TestRegToAutomaat();
             //            testEpsilonNDFA();
@@ -186,8 +186,12 @@ namespace Automaat
             testWords.Add(new Tuple<string, bool>("babab", false));
             testWords.Add(new Tuple<string, bool>("ababa", true));
             TestingAutomaat("Bevat een even aantal b’s of bevat een oneven aantal a’s",m, testWords);
-            var a = m.GeefTaal(2);
-            Console.WriteLine(a.Count);
+            var a = m.GeefTaal(3);
+            Console.WriteLine("geaccepteerde woorden:");
+            a.ForEach(word => Console.WriteLine("\t" + word));
+            var b = m.GeefNietTaal(3);
+            Console.WriteLine("niew geaccepteerde woorden:");
+            b.ForEach(word => Console.WriteLine("\t" + word));
         }
 
         static void PracL1Representatie3()
@@ -473,9 +477,11 @@ namespace Automaat
             m.DefineAsStartState("0");
             m.DefineAsFinalState("2");
             m.DefineAsFinalState("4");
-            //Graphviz.PrintGraph(m, "");
+            Graphviz.PrintGraph(m, "");
+            Console.WriteLine("first automate:");
             m.PrintTransitions();
             var minimized = m.Minimize();
+            Console.WriteLine("minimized automate:");
             minimized.PrintTransitions();
 
 

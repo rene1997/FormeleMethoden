@@ -126,11 +126,18 @@ namespace Automaat
         public List<string> GeefTaal(int length)
         {
             var allWords = new List<string>();
-            MakeWords(string.Empty, length, ref allWords);
+            MakeWords(string.Empty, length, ref allWords, true);
             return allWords;
         }
 
-        private void MakeWords(String word, int length, ref List<string> allWords)
+        public List<string> GeefNietTaal(int length)
+        {
+            var allWords = new List<string>();
+            MakeWords(string.Empty, length, ref allWords, false);
+            return allWords;
+        }
+
+        private void MakeWords(String word, int length, ref List<string> allWords, bool accept)
         {
             if (word.Length >= length)
                 return;
@@ -138,10 +145,11 @@ namespace Automaat
             for (int i = 0; i < _symbols.Count; i++)
             {
                 var newWord = word + _symbols.ElementAt(i);
-                Console.WriteLine(newWord);
-                if (Accepteer(newWord))
+                if (Accepteer(newWord) && accept)
                     allWords.Add(newWord);
-                MakeWords(newWord, length, ref allWords);
+                else if (!Accepteer(newWord) && !accept)
+                    allWords.Add(newWord);
+                MakeWords(newWord, length, ref allWords, accept);
             }
         }
 
