@@ -517,6 +517,9 @@ namespace Automaat
             dfa2.DefineAsFinalState(1);
             dfa2.DefineAsFinalState(2);
 
+            var notDfa1 = !dfa1;
+            var notDfa2 = !dfa2;
+
             var and = dfa1 & dfa2;
             var or = dfa1 | dfa2;
 
@@ -526,6 +529,8 @@ namespace Automaat
 
             TestingAutomaat("And dfa", and, testWords);
             TestingAutomaat("Or dfa", or, testWords);
+
+            or = !or;
         }
     }
 }

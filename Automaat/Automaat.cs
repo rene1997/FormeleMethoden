@@ -602,6 +602,24 @@ namespace Automaat
             return a;
         }
 
+        public static Automaat<T> operator !(Automaat<T> a)
+        {
+            var newFinalState = new SortedSet<T>(); 
+
+            foreach (var state in a._states)
+            {
+                if (!a.IsFinalState(state))
+                {
+                    newFinalState.Add(state);
+                }
+            }
+
+            a._finalStates.Clear();
+            newFinalState.ToList().ForEach(a.DefineAsFinalState);
+
+            return a;
+        }
+
         private static Automaat<State> CombineAutomaat(Automaat<T> a1, Automaat<T> a2)
         {
             var alphabet = new SortedSet<char>(a1.GetAlphabet());
