@@ -53,6 +53,25 @@ namespace Automaat
             right = null;
         }
 
+        public void ViewImage(bool minimizedDFA)
+        {
+            var a = Thompson.CreateAutomaat(this);
+            if(minimizedDFA)
+                Graphviz.PrintGraph(NdfatoDfa.MakeDfa(a).MinimizeReverse(), "test");
+            else
+                Graphviz.PrintGraph(a, "test");
+            
+        }
+
+        public override bool Equals(object obj)
+        {
+            var reg = (RegExp)obj;
+            if (reg == null) return false;
+            var automate1 = Thompson.CreateAutomaat(this).MinimizeReverse();
+            var automate2 = Thompson.CreateAutomaat(reg).MinimizeReverse();
+            return automate1.Equals(automate2);
+        }
+        
         public RegExp plus()
         {
             RegExp result = new RegExp();

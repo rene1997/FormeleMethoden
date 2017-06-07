@@ -26,7 +26,7 @@ namespace Automaat
             }
             s += " }";
 
-            Console.WriteLine(s);
+            //Console.WriteLine(s);
 
             GenerateGraphFile(s, filename);
         }
