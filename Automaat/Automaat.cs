@@ -124,6 +124,27 @@ namespace Automaat
             return false;
         }
 
+        internal void Print()
+        {
+            string alphabet = string.Empty;
+            _symbols.ToList().ForEach(s => alphabet += $"{s}, ");
+            alphabet = alphabet.Substring(0, alphabet.Length - 2);
+            Console.WriteLine($"alphabet: {alphabet}");
+            
+            string startstates = string.Empty;
+            _startStates.ToList().ForEach(s => startstates += $"{s}, ");
+            startstates = startstates.Substring(0, startstates.Length - 2);
+            Console.WriteLine($"startstates: {startstates}");
+
+            string finalstates = string.Empty;
+            _finalStates.ToList().ForEach(s => finalstates += $"{s}, ");
+            finalstates = finalstates.Substring(0, finalstates.Length - 2);
+            Console.WriteLine($"finalstates: {finalstates}");
+
+            Console.WriteLine("transitions:");
+            PrintTransitions();
+        }
+
         public List<string> GeefTaal(int length)
         {
             var allWords = new List<string>();
@@ -183,13 +204,14 @@ namespace Automaat
             Graphviz.PrintGraph(this, "test");
         }
 
-        public Automaat<char> MinimizeHopCroft()
+        public Automaat<int> MinimizeHopCroft()
         {
-                RemoveStates();
-                var table = new Table(this);
-                table.Minimize();
-                table.Print();
-                return table.ToAutomaat();
+            var newAutomaat = NdfatoDfa.MakeDfa(this);
+            RemoveStates(); 
+            var table = new Table(newAutomaat);
+            table.Minimize();
+            table.Print();
+            return table.ToAutomaat();
         }
 
         public Automaat<int> MinimizeReverse()
@@ -201,11 +223,11 @@ namespace Automaat
 
         private class Table
         {
-            public Automaat<T> Automaat;
+            public Automaat<int> Automaat;
             public SortedSet<char> Alphabet = new SortedSet<char>();
             public List<Block> Blocks = new List<Block>();
 
-            public Table(Automaat<T> automaat)
+            public Table(Automaat<int> automaat)
             {
                 Automaat = automaat;
                 automaat._symbols.ToList().ForEach(s => Alphabet.Add(s));
@@ -243,14 +265,14 @@ namespace Automaat
                 Blocks.ForEach(b => b.Print());
             }
 
-            public Automaat<char> ToAutomaat()
+            public Automaat<int> ToAutomaat()
             {
-                var automaat = new Automaat<char>(Alphabet);
+                var automaat = new Automaat<int>(Alphabet);
                 foreach(var block in Blocks)
                 {
                     foreach(char c in Alphabet)
                     {
-                        automaat.AddTransition(new Transition<char>(block.Identifier, c, block.Rows[0].FindDestination(c).Identifier));
+                        automaat.AddTransition(new Transition<int>(block.Identifier, c, block.Rows[0].FindDestination(c).Identifier));
                     }
                     Automaat._startStates.ToList().ForEach(startstate =>
                     {
@@ -273,8 +295,8 @@ namespace Automaat
                 Blocks.Add(new Block(this, Automaat._finalStates, 'A') { isFinalState = true});
 
                 //non finalstates:
-                var states = new SortedSet<T>();
-                foreach(T state in Automaat._states)
+                var states = new SortedSet<int>();
+                foreach(int state in Automaat._states)
                 {
                     var isFinalState = false;
                     Automaat._finalStates.ToList().ForEach(s => { if (s.Equals(state)) isFinalState = true;  });
@@ -288,10 +310,10 @@ namespace Automaat
         {
             public List<Row> Rows = new List<Row>();
             public char Identifier;
-            public SortedSet<T> States = new SortedSet<T>();
+            public SortedSet<int> States = new SortedSet<int>();
             public bool isFinalState { get; set; }
             private Table table;
-            private Automaat<T> automaat;
+            private Automaat<int> automaat;
             
             public Block(Table table, List<Row> rows, char id)
             {
@@ -302,7 +324,7 @@ namespace Automaat
                 rows.ForEach(r => States.Add(r.State));
             }
 
-            public Block(Table table, SortedSet<T> states, char id)
+            public Block(Table table, SortedSet<int> states, char id)
             {
                 this.table = table;
                 this.automaat = table.Automaat;
@@ -391,11 +413,11 @@ namespace Automaat
         private class Row 
         {
             public int Identifier;
-            public T State;
+            public int State;
             public List<Destination> Destinations = new List<Destination>();
             private Table table;
 
-            public Row(Table table, T state, int id)
+            public Row(Table table, int state, int id)
             {
                 this.table = table;
                 this.State = state;
@@ -444,11 +466,11 @@ namespace Automaat
         private class Destination
         {
             public char Symbol;
-            public T Target;
+            public int Target;
             public Block TargetBlock;
             private Table table;
 
-            public Destination(Table table, char symbol, T target)
+            public Destination(Table table, char symbol, int target)
             {
                 this.table = table;
                 Symbol = symbol;
@@ -471,7 +493,7 @@ namespace Automaat
                 return null;
             }
 
-            public void Print(T state)
+            public void Print(int state)
             {
                 if (TargetBlock != null)
                     Console.WriteLine($"\t\tdestination: \tinput:{Symbol} \t target: {Target} / {TargetBlock.Identifier}");

@@ -7,6 +7,7 @@ namespace Automaat
     {
         static void Main(string[] args)
         {
+            new UserProgram();
             //var App = new App();
             //App.Start();
             //new TestRegGram();
@@ -42,8 +43,8 @@ namespace Automaat
             //TestRegToDfa();
 
             //TestSamenvoegen();
-            TestRegCompare();
-            Console.ReadLine(); 
+            //TestRegCompare();
+            //Console.ReadLine(); 
         }
         
         static void TestTranstion()

@@ -60,6 +60,7 @@
     <Compile Include="TestThompson.cs" />
     <Compile Include="Thompson.cs" />
     <Compile Include="Transition.cs" />
+    <Compile Include="UserProgram.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
