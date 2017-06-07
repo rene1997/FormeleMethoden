@@ -7,25 +7,33 @@ namespace Automaat
     {
         //production rule
         public readonly T FromSymbol;
-        public char Letter;
+        public readonly char Letter;
         public readonly T ToSymbol;
+        public bool ToSymbolIsFinalSymbol { get; set; }
         
         public PRule(T fromSymbol, char letter, T toSymbol)
         {
             this.FromSymbol = fromSymbol;
             this.Letter = letter;
             this.ToSymbol = toSymbol;
+            this.ToSymbolIsFinalSymbol = false;
         }
 
         public PRule(T fromSymbol, char letter)
         {
             this.FromSymbol = fromSymbol;
             this.Letter = letter;
+            this.ToSymbol = default(T);
+        }
+
+        public string ToSymbolInString()
+        {
+            return this.ToSymbolIsFinalSymbol ? $"{this.Letter}" : $"{this.Letter}{this.ToSymbol}";
         }
 
         public override string ToString()
         {
-            return $"{FromSymbol} -> {Letter}{(ToSymbol == null ? "" : ToSymbol.ToString())}";
+            return $"{FromSymbol} -> {this.ToSymbolInString()}";
         }
 
         public int CompareTo(PRule<T> other)

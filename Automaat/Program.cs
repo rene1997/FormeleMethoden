@@ -41,11 +41,12 @@ namespace Automaat
             //TestThompson.TestRegToAutomaat();
             //TestRegToDfa();
 
-            TestSamenvoegen();
+            
+            //TestSamenvoegen();
+            GramToNdfaAndReverse();
             Console.ReadLine(); 
         }
-                
-        
+
         static void TestTranstion()
         {
             Console.WriteLine("Testing equals method for transition");
@@ -539,8 +540,35 @@ namespace Automaat
 
             TestingAutomaat("And dfa", and, testWords);
             TestingAutomaat("Or dfa", or, testWords);
+        }
+        private static void GramToNdfaAndReverse()
+        {
+            char[] alphabet = { 'a', 'b' };
+            var ndfa = new Automaat<int>(alphabet);
 
-            or = !or;
+            ndfa.AddTransition(new Transition<int>(0, alphabet[0], 0));
+            ndfa.AddTransition(new Transition<int>(0, alphabet[0], 1));
+            ndfa.AddTransition(new Transition<int>(0, alphabet[1], 0));
+            ndfa.AddTransition(new Transition<int>(0, alphabet[1], 3));
+
+            ndfa.AddTransition(new Transition<int>(1, alphabet[0], 2));
+
+            ndfa.AddTransition(new Transition<int>(2, alphabet[0], 2));
+            ndfa.AddTransition(new Transition<int>(2, alphabet[1], 2));
+
+            ndfa.AddTransition(new Transition<int>(3, alphabet[1], 4));
+
+            ndfa.AddTransition(new Transition<int>(4, alphabet[0], 4));
+            ndfa.AddTransition(new Transition<int>(4, alphabet[1], 4));
+            //Graphviz.PrintGraph(ndfa, "C:\\Users\\remco\\Documents\\School\\Technische informatica jaar 3\\3.4\\formele methoden\\automaten pictures\\ndfaToGram");
+
+            ndfa.DefineAsStartState(0);
+
+            ndfa.DefineAsFinalState(2);
+            ndfa.DefineAsFinalState(4);
+
+            var gram = RegGram<int>.NdfaToRegGram(ndfa);
+            Console.WriteLine(gram.ToString());
         }
     }
 }
