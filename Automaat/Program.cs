@@ -23,7 +23,7 @@ namespace Automaat
             //Console.WriteLine("is automaat 2 a DFA: " + a2.IsDfa());
 
             //PracL1ERepresentatie1();
-            PracL1Representatie2();
+            //PracL1Representatie2();
             //PracL1Representatie3();
             //PracL1Representatie3();
             //PracL1Representatie4();
@@ -35,13 +35,13 @@ namespace Automaat
             //DfaToDfa();
             //TestOptimizingDfa();
 
-            //TestMinimize();
+            TestMinimize();
             //TestThompson.TestRegToAutomaat();
             //            testEpsilonNDFA();
             //TestThompson.TestRegToAutomaat();
             //TestRegToDfa();
 
-            TestSamenvoegen();
+            //TestSamenvoegen();
             Console.ReadLine(); 
         }
                 
@@ -481,12 +481,17 @@ namespace Automaat
             m.DefineAsStartState("0");
             m.DefineAsFinalState("2");
             m.DefineAsFinalState("4");
-            Graphviz.PrintGraph(m, "");
+            //Graphviz.PrintGraph(m, "");
             Console.WriteLine("first automate:");
             m.PrintTransitions();
-            var minimized = m.Minimize();
+            var minimized = m.MinimizeHopCroft();
             Console.WriteLine("minimized automate:");
             minimized.PrintTransitions();
+
+            var otherMinimized = m.MinimizeReverse();
+            Console.WriteLine("other minimization:");
+            otherMinimized.PrintTransitions();
+
         }
 
         static void TestSamenvoegen()

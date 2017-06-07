@@ -154,13 +154,20 @@ namespace Automaat
             }
         }
 
-        public Automaat<char> Minimize()
+        public Automaat<char> MinimizeHopCroft()
         {
-            RemoveStates();
-            var table = new Table(this);
-            table.Minimize();
-            table.Print();
-            return table.ToAutomaat();
+                RemoveStates();
+                var table = new Table(this);
+                table.Minimize();
+                table.Print();
+                return table.ToAutomaat();
+        }
+
+        public Automaat<int> MinimizeReverse()
+        {
+            var automate = NdfatoDfa.MakeDfa(Reverse());
+            automate = NdfatoDfa.MakeDfa(automate.Reverse());
+            return automate;
         }
 
         private class Table
