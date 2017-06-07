@@ -581,61 +581,53 @@ namespace Automaat
         }
         public static Automaat<int> operator &(Automaat<T> a1, Automaat<T> a2)
         {
-            var newA = CombineAutomaat(a1, a2);
-            var a = new Automaat<int>(newA.GetAlphabet());
-
-            newA._startStates.ToList().ForEach(state => a.DefineAsStartState(state.Id));
-            
-            foreach (var state in newA._states)
-            {
-                if (a1.IsFinalState(state.StateAutomaat1) 
-                    && a2.IsFinalState(state.StateAutomaat2))
-                {
-                    a.DefineAsFinalState(state.Id);
-                }
-            }
-
-            return a;
+            return CombineAutomaat(a1, a2, (b, b1) => b && b1);
         }
 
         public static Automaat<int> operator |(Automaat<T> a1, Automaat<T> a2)
         {
-            var newA = CombineAutomaat(a1, a2);
-            var a = new Automaat<int>(newA.GetAlphabet());
-
-            newA._startStates.ToList().ForEach(state => a.DefineAsStartState(state.Id));
-
-            foreach (var state in newA._states)
-            {
-                if (a1.IsFinalState(state.StateAutomaat1)
-                    || a2.IsFinalState(state.StateAutomaat2))
-                {
-                    a.DefineAsFinalState(state.Id);
-                }
-            }
-
-            return a;
+            return CombineAutomaat(a1, a2, (b, b1) => b || b1);
         }
 
         public static Automaat<T> operator !(Automaat<T> a)
         {
-            var newFinalState = new SortedSet<T>(); 
-
+            var newA = new Automaat<T>(a.GetAlphabet());
+            a._startStates.ToList().ForEach(newA.DefineAsStartState);
+            a._transitions.ToList().ForEach(newA.AddTransition);
+            
             foreach (var state in a._states)
             {
                 if (!a.IsFinalState(state))
                 {
-                    newFinalState.Add(state);
+                    newA.DefineAsFinalState(state);
                 }
             }
 
-            a._finalStates.Clear();
-            newFinalState.ToList().ForEach(a.DefineAsFinalState);
-
-            return a;
+            return newA;
         }
 
-        private static Automaat<State> CombineAutomaat(Automaat<T> a1, Automaat<T> a2)
+        private static Automaat<int> CombineAutomaat(Automaat<T> a1, Automaat<T> a2,
+            Func<bool, bool, bool> finalstateDefine)
+        {
+            var combinedAutomaat = BetweenAutomaat(a1, a2);
+            var newA = new Automaat<int>(combinedAutomaat.GetAlphabet());
+
+            combinedAutomaat._startStates.ToList().ForEach(state => newA.DefineAsStartState(state.Id));
+
+            combinedAutomaat._transitions.ToList().ForEach(trans => newA.AddTransition(new Transition<int>(trans.FromState.Id, trans.Symbol, trans.ToState.Id)));
+
+            foreach (var state in combinedAutomaat._states)
+            {
+                if (finalstateDefine(a1.IsFinalState(state.StateAutomaat1), a2.IsFinalState(state.StateAutomaat2)))
+                {
+                    newA.DefineAsFinalState(state.Id);
+                }
+            }
+
+            return newA;
+        }
+
+        private static Automaat<State> BetweenAutomaat(Automaat<T> a1, Automaat<T> a2)
         {
             var alphabet = new SortedSet<char>(a1.GetAlphabet());
             a2.GetAlphabet().ToList().ForEach(c => alphabet.Add(c));
