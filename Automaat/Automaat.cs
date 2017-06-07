@@ -138,6 +138,30 @@ namespace Automaat
             return allWords;
         }
 
+        public override bool Equals(object obj)
+        {
+            Automaat<T> item2 = (Automaat<T>)obj;
+            if (item2 == null) return false;
+            //check transitions
+            if (item2._transitions.Count != _transitions.Count) return false;
+            for (var i = 0; i < _transitions.Count; i++)
+            {
+                var t1 = _transitions.ElementAt(i);
+                var t2 = item2._transitions.ElementAt(i);
+                if (!t1.Equals(t2)) return false;
+            }
+
+            //check finalstates
+            if (item2._finalStates.Count != _finalStates.Count) return false;
+            for(var i = 0; i < _finalStates.Count; i++)
+            {
+                var f1 = _transitions.ElementAt(i);
+                var f2 = item2._finalStates.ElementAt(i);
+                if (!f1.Equals(f2)) return false;
+            }
+            return true;
+        }
+
         private void MakeWords(String word, int length, ref List<string> allWords, bool accept)
         {
             if (word.Length >= length)
@@ -152,6 +176,11 @@ namespace Automaat
                     allWords.Add(newWord);
                 MakeWords(newWord, length, ref allWords, accept);
             }
+        }
+
+        public void ViewImage()
+        {
+            Graphviz.PrintGraph(this, "test");
         }
 
         public Automaat<char> MinimizeHopCroft()

@@ -41,9 +41,11 @@ namespace Automaat
             //TestThompson.TestRegToAutomaat();
             //TestRegToDfa();
 
+
             
             //TestSamenvoegen();
             GramToNdfaAndReverse();
+            TestRegCompare();
             Console.ReadLine(); 
         }
 
@@ -569,6 +571,15 @@ namespace Automaat
 
             var gram = RegGram<int>.NdfaToRegGram(ndfa);
             Console.WriteLine(gram.ToString());
+        }
+
+        private static void TestRegCompare()
+        {
+            var reg1 = new RegExp("a").plus().dot(new RegExp("a").star().or(new RegExp("a").plus())).dot(new RegExp("b").plus()) ;
+            reg1.ViewImage(true);
+            var reg2 = new RegExp("a").dot(new RegExp("a").star()).dot(new RegExp("b").dot(new RegExp("b").star()));
+            reg2.ViewImage(false);
+            Console.WriteLine(reg1.Equals(reg2));
         }
     }
 }
