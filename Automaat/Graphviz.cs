@@ -8,19 +8,19 @@ namespace Automaat
 {
     public class Graphviz
     {
-        public static void PrintGraph(Automaat<string> data, string filename)
+        public static void PrintGraph<T>(Automaat<T> data, string filename) where T : IComparable
         {
             string s = "digraph{ ";
             s += "node [shape = doublecircle];";
                         
-            foreach (string t in data._finalStates)
+            foreach (var t in data._finalStates)
             {
                 s += " " + ("S" + t) + " ";
             }
             s += ";  ";
             s += "node [shape = circle];";
 
-            foreach (Transition<string> t in data._transitions)
+            foreach (var t in data._transitions)
             {
                 s += " " + ("S" + t.FromState) + " -> " + ("S" + t.ToState) + " " + "[ label = " + "\"" + t.Symbol + "\"" + " ];";
             }

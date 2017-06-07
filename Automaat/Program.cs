@@ -35,13 +35,13 @@ namespace Automaat
             //DfaToDfa();
             //TestOptimizingDfa();
 
-            TestMinimize();
+            //TestMinimize();
             //TestThompson.TestRegToAutomaat();
             //            testEpsilonNDFA();
             //TestThompson.TestRegToAutomaat();
             //TestRegToDfa();
 
-            //TestSamenvoegen();
+            TestSamenvoegen();
             Console.ReadLine(); 
         }
                 
@@ -481,7 +481,6 @@ namespace Automaat
             m.DefineAsStartState("0");
             m.DefineAsFinalState("2");
             m.DefineAsFinalState("4");
-            Graphviz.PrintGraph(m, "C:\\Users\\renek\\Documents\\FormeleMethoden\\test.png");
             Console.WriteLine("first automate:");
             m.PrintTransitions();
             var minimized = m.MinimizeHopCroft();
@@ -531,6 +530,8 @@ namespace Automaat
 
             var and = dfa1 & dfa2;
             var or = dfa1 | dfa2;
+
+            Graphviz.PrintGraph(and, "C:\\Users\\remco\\Documents\\School\\Technische informatica jaar 3\\3.4\\formele methoden\\automaten pictures\\test");
 
             var testWords = new List<Tuple<string, bool>>();
             dfa1.GeefTaal(4).ForEach(s => testWords.Add(new Tuple<string, bool>(s, true)));
