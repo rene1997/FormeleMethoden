@@ -44,6 +44,7 @@ namespace Automaat
 
             byte[] output = wrapper.GenerateGraph(data, Enums.GraphReturnType.Jpg);
             System.IO.File.WriteAllBytes(filename + ".jpg", output);
+            System.Diagnostics.Process.Start($"{filename}.jpg");
         }
     }
 }
