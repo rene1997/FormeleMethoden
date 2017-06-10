@@ -379,6 +379,7 @@ namespace Automaat
             m.DefineAsFinalState(10);
 
             var dfa = NdfatoDfa.MakeDfa(m);
+            Graphviz.PrintGraph(m, "test");            
             dfa.PrintTransitions();
         }
 
