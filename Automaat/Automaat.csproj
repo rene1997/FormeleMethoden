@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Automaat.cs" />
+    <Compile Include="AutomaatGenerator.cs" />
     <Compile Include="Graphviz.cs" />
     <Compile Include="NdfatoDfa.cs" />
     <Compile Include="Program.cs" />

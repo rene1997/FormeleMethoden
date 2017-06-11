@@ -8,7 +8,9 @@ namespace Automaat
         private static char[] Alphabet = {'a', 'b'};
         static void Main(string[] args)
         {
-            new UserProgram();
+            TestGenerateAutomaat();
+            Console.ReadLine();
+            //new UserProgram();
             //var App = new App();
             //App.Start();
             //new TestRegGram();
@@ -610,6 +612,23 @@ namespace Automaat
             ndfa.DefineAsFinalState("2");
 
             Graphviz.PrintGraph(ndfa, "ndfaTest");
+        }
+
+        private static void TestGenerateAutomaat()
+        {
+            var a = AutomaatGenerator.GenerateAutomaat("bbab", AutomaatGenerator.AutomaatType.BEGINT_MET);
+
+            var testWords = new List<Tuple<string, bool>>
+            {
+                new Tuple<string, bool>("bbab", true),
+                new Tuple<string, bool>("bbbab", false),
+                new Tuple<string, bool>("babb", false),
+                new Tuple<string, bool>("bbaba", true),
+                new Tuple<string, bool>("bbabb", true)
+            };
+
+            TestingAutomaat("Testing not optimized automaat", a, testWords);
+            Graphviz.PrintGraph(a, "begintmettest");
         }
     }
 }
