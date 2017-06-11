@@ -616,7 +616,7 @@ namespace Automaat
 
         private static void TestGenerateAutomaat()
         {
-            var a = AutomaatGenerator.GenerateAutomaat("bbab", AutomaatGenerator.AutomaatType.BEGINT_MET);
+            var a = AutomaatGenerator.GenerateAutomaat("bbab", Alphabet, AutomaatGenerator.AutomaatType.BEGINT_MET);
 
             var testWords = new List<Tuple<string, bool>>
             {
@@ -627,8 +627,65 @@ namespace Automaat
                 new Tuple<string, bool>("bbabb", true)
             };
 
-            TestingAutomaat("Testing not optimized automaat", a, testWords);
-            Graphviz.PrintGraph(a, "begintmettest");
+            //TestingAutomaat("Begint met bbab", a, testWords);
+            //Graphviz.PrintGraph(a, "begintmettest");
+
+            a = AutomaatGenerator.GenerateAutomaat("aba", Alphabet, AutomaatGenerator.AutomaatType.BEVAT);
+
+            testWords = new List<Tuple<string, bool>>
+            {
+                new Tuple<string, bool>("bbab", true),
+                new Tuple<string, bool>("bbbab", false),
+                new Tuple<string, bool>("babb", false),
+                new Tuple<string, bool>("bbaba", true),
+                new Tuple<string, bool>("bbabb", false)
+            };
+
+            //TestingAutomaat("Bevat aba", a, testWords);
+            //Graphviz.PrintGraph(a, "bevat aba");
+
+            a = AutomaatGenerator.GenerateAutomaat("aa", Alphabet, AutomaatGenerator.AutomaatType.BEVAT);
+
+            testWords = new List<Tuple<string, bool>>
+            {
+                new Tuple<string, bool>("bbaa", true),
+                new Tuple<string, bool>("abaa", true),
+                new Tuple<string, bool>("abab", false),
+                new Tuple<string, bool>("bbabab", false),
+                new Tuple<string, bool>("bbaabaa", true)
+            };
+
+            //TestingAutomaat("Bevat aa", a, testWords);
+            //Graphviz.PrintGraph(a, "bevat aa");
+
+            a = AutomaatGenerator.GenerateAutomaat("baba", Alphabet, AutomaatGenerator.AutomaatType.BEVAT);
+
+            testWords = new List<Tuple<string, bool>>
+            {
+                new Tuple<string, bool>("aaababaab", true),
+                new Tuple<string, bool>("abab", false),
+                new Tuple<string, bool>("aabab", false),
+                new Tuple<string, bool>("baba", true),
+                new Tuple<string, bool>("bbaaba", false)
+            };
+
+            //TestingAutomaat("Bevat baba", a, testWords);
+            //Graphviz.PrintGraph(a, "bevat baba");
+
+            a = AutomaatGenerator.GenerateAutomaat("baab", Alphabet, AutomaatGenerator.AutomaatType.EINDIGT_OP);
+
+            testWords = new List<Tuple<string, bool>>
+            {
+                new Tuple<string, bool>("baab", true),
+                new Tuple<string, bool>("baaabaab", true),
+                new Tuple<string, bool>("baaba", false),
+                new Tuple<string, bool>("baabb", false),
+                new Tuple<string, bool>("baabaab", true),
+                new Tuple<string, bool>("baabaa", false)
+            };
+
+            TestingAutomaat("eindigt op baab", a, testWords);
+            Graphviz.PrintGraph(a, "eindigt op baab");
         }
     }
 }
