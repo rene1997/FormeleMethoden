@@ -8,9 +8,9 @@ namespace Automaat
         private static char[] Alphabet = {'a', 'b'};
         static void Main(string[] args)
         {
-            TestGenerateAutomaat();
-            Console.ReadLine();
-            //new UserProgram();
+            //TestGenerateAutomaat();
+            //Console.ReadLine();
+            new UserProgram();
             //var App = new App();
             //App.Start();
             //new TestRegGram();
@@ -686,6 +686,11 @@ namespace Automaat
 
             TestingAutomaat("eindigt op baab", a, testWords);
             Graphviz.PrintGraph(a, "eindigt op baab");
+
+            a = a.MinimizeReverse();
+
+            TestingAutomaat("eindigt op baab (minimized)", a, testWords);
+            Graphviz.PrintGraph(a, "eindigt op baab (minimized)");
         }
     }
 }

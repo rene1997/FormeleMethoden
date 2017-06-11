@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,9 +22,6 @@ namespace Automaat
 
     public class UserProgram
     {
-
-        
-
         public static int GetInput(int max)
         {
             int input = 0;
@@ -33,16 +31,17 @@ namespace Automaat
             return input;
         }
 
-        String[] Hoofdmenu = new string[] {
+        String[] Hoofdmenu = {
             "regex => ndfa",
             "ndfa => dfa",
             "ndfa => grammatica",
             "dfa => minimalisatie",
             "thompson",
-            "gelijkheid reguliere expressies"
+            "gelijkheid reguliere expressies",
+            "maak zelf een automaat"
         };
 
-        private List<SubMenu> submenus = new List<SubMenu>();
+        private readonly List<SubMenu> _submenus = new List<SubMenu>();
 
         public UserProgram()
         {
@@ -53,20 +52,21 @@ namespace Automaat
                 Console.WriteLine("welkom, voer een getal in om een functie uit te voeren:");
                 int index = 0;
                 Hoofdmenu.ToList().ForEach(s => { Console.WriteLine($"{index}) {Hoofdmenu[index]}"); index++; });
-                index = GetInput(submenus.Count);
-                submenus[index].ShowMenu();
+                index = GetInput(_submenus.Count);
+                _submenus[index].ShowMenu();
             }
             
         }
 
         public void FillSubmenus()
         {
-            submenus.Add(new RegToNDFA());
-            submenus.Add(new NDFAToDFA());
-            submenus.Add(new NdfaToGrammatica());
-            submenus.Add(new Minimalization());
-            submenus.Add(new ThompsonSample());
-            submenus.Add(new CompareRegex());
+            _submenus.Add(new RegToNDFA());
+            _submenus.Add(new NDFAToDFA());
+            _submenus.Add(new NdfaToGrammatica());
+            _submenus.Add(new Minimalization());
+            _submenus.Add(new ThompsonSample());
+            _submenus.Add(new CompareRegex());
+            _submenus.Add(new BuildDfa());
         }
 
         private interface SubMenu
@@ -471,6 +471,80 @@ namespace Automaat
                             break;
                     }
                 }
+            }
+        }
+
+        private class BuildDfa : SubMenu
+        {
+            private Array _types;
+            private Automaat<int> _buildedAutomaat;
+            private string[] submenus;
+            public void ShowMenu()
+            {
+                Console.Clear();
+                Init();
+                Console.WriteLine("Kies automaat type");
+
+                for (var i = 0; i < _types.Length; i++)
+                {
+                    Console.WriteLine($"{i}) {_types.GetValue(i)}");
+                }
+                var typeId = GetInput(_types.Length);
+
+                var valid = false;
+                string rules = "", alphabet = "";
+                while (!valid)
+                {
+                    Console.WriteLine("Voer automaat definitie in");
+                    rules = Console.ReadLine();
+
+                    Console.WriteLine("Voer alfabet in");
+                    alphabet = Console.ReadLine();
+
+                    valid = !string.IsNullOrEmpty(rules);
+                }
+
+                BuildAutomaat(rules, alphabet, typeId);
+
+                var runnig = true;
+                while (runnig)
+                {
+                    for (int i = 0; i < this.submenus.Length; i++)
+                    {
+                        Console.WriteLine($"{i}) {this.submenus[i]}");
+                    }
+                    var input = GetInput(this.submenus.Length);
+                    if (input == 0)
+                    {
+                        this._buildedAutomaat.ViewImage($"{_types.GetValue(typeId)} {rules}");
+                    }
+                    runnig = input != submenus.Length-1;
+                }
+            }
+
+            private void Init()
+            {
+                _types = Enum.GetValues(typeof(AutomaatGenerator.AutomaatType));
+                this.submenus = new []
+                {
+                    "Toon automaat",
+                    "Terug naar hoofdmenu"
+                };
+            }
+
+            private void BuildAutomaat(string ruleString, string alphabetString, int typeIndex)
+            {
+                var a = new SortedSet<char>(alphabetString);
+                ruleString.ToCharArray().ToList().ForEach(c => a.Add(c));
+                char[] alphabet = new char[a.Count];
+                for (int i = 0; i < a.Count; i++)
+                {
+                    alphabet[i] = a.ElementAt(i);
+                }
+                var type = (AutomaatGenerator.AutomaatType) _types.GetValue(typeIndex);
+
+                this._buildedAutomaat =
+                    AutomaatGenerator.GenerateAutomaat(ruleString, alphabet, type);
             }
         }
     }

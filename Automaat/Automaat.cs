@@ -201,7 +201,15 @@ namespace Automaat
 
         public void ViewImage()
         {
-            Graphviz.PrintGraph(this, "test");
+            this.ViewImage("Automaat picture");
+        }
+
+        public void ViewImage(string filename)
+        {
+            var isEmptyNullOrWhiteSpace = string.IsNullOrWhiteSpace(filename) || string.IsNullOrEmpty(filename);
+            filename = !isEmptyNullOrWhiteSpace ? filename : "Automaat picture";
+            
+            Graphviz.PrintGraph(this, filename);
         }
 
         public Automaat<int> MinimizeHopCroft()
