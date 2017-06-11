@@ -12,6 +12,13 @@ namespace Automaat
         public string text;
     }
 
+    public struct RegexStruct
+    {
+        public RegExp regex;
+        public RegExp regex2;
+        public string text;
+    }
+
     public class UserProgram
     {
 
@@ -58,6 +65,8 @@ namespace Automaat
             submenus.Add(new NDFAToDFA());
             submenus.Add(new NdfaToGrammatica());
             submenus.Add(new Minimalization());
+            submenus.Add(new ThompsonSample());
+            submenus.Add(new CompareRegex());
         }
 
         private interface SubMenu
@@ -355,6 +364,110 @@ namespace Automaat
                         case 3:
                             running = false;
                             automates.Clear();
+                            break;
+                    }
+                }
+            }
+        }
+
+        private class ThompsonSample : SubMenu
+        {
+            private List<RegexStruct> samples = new List<RegexStruct>();
+            private String[] actions = { "0) automaat met thompson" , "1) terug"};
+
+            public void ShowMenu()
+            {
+                FillList();
+                Console.Clear();
+                Console.WriteLine("thomson gekozen. Kies een regex");
+                int index = 0;
+                samples.ForEach(s => { Console.WriteLine($"{index}) {s.text}"); index++; });
+                index = GetInput(samples.Count);
+                ViewActions(samples[index]);
+
+            }
+
+            public void FillList()
+            {
+                samples = new List<RegexStruct>();
+                var reg1 = new RegExp("a").dot(new RegExp("a").star()).dot(new RegExp("b").dot(new RegExp("b").star()));
+                samples.Add(new RegexStruct { regex = reg1, text="a+b+" });
+                var reg2 = new RegExp("a").or(new RegExp("b"));
+                samples.Add(new RegexStruct { regex = reg2.star(), text = "(a|b)*" });
+            }
+
+            private void ViewActions(RegexStruct regexStruct)
+            {
+                var running = true;
+                while (running)
+                {
+                    Console.Clear();
+                    Console.WriteLine($"regex: {regexStruct.text} gekozen. Kies een actie");
+                    actions.ToList().ForEach(a => Console.WriteLine(a));
+                    int input = GetInput(actions.Length);
+                    switch (input)
+                    {
+                        case 0:
+                            Thompson.CreateAutomaat(regexStruct.regex).ViewImage();
+                            break;
+                        case 1:
+                            running = false;
+                            samples.Clear();
+                            break;
+                    }
+                }
+            }
+        }
+
+        private class CompareRegex : SubMenu
+        {
+            private List<RegexStruct> samples = new List<RegexStruct>();
+            private String[] actions = { "0) automaat 1", "1) automaat 2", "2) controleer gelijkheid", "3) terug" };
+
+            public void ShowMenu()
+            {
+                FillList();
+                Console.Clear();
+                Console.WriteLine("Vergelijk regex gekozen: \nKies een voorbeeld:");
+                int index = 0;
+                samples.ForEach(s => { Console.WriteLine($"{index}) s.text"); index++; });
+                index = GetInput(samples.Count);
+                HandleAction(samples[index]);
+            }
+
+            private void FillList()
+            {
+                samples = new List<RegexStruct>();
+                var reg1a = new RegExp("a").plus().dot(new RegExp("a").star()).dot(new RegExp("b").plus());
+                var reg1b = new RegExp("a").dot(new RegExp("a").star()).dot(new RegExp("b").dot(new RegExp("b").star()));
+                samples.Add(new RegexStruct { regex = reg1a, regex2 = reg1b, text = "a+(a*)b+ && a a* b b*" });
+            }
+
+            private void HandleAction(RegexStruct regex)
+            {
+                var running = true;
+                while (running)
+                {
+                    Console.Clear();
+                    Console.WriteLine($"regex: {regex.text} gekozen. Kies een actie");
+                    actions.ToList().ForEach(a => Console.WriteLine(a));
+                    int input = GetInput(actions.Length);
+                    switch (input)
+                    {
+                        case 0:
+                            Thompson.CreateAutomaat(regex.regex).ViewImage();
+                            break;
+                        case 1:
+                            Thompson.CreateAutomaat(regex.regex2).ViewImage();
+                            break;
+                        case 2:
+                            Console.WriteLine("gelijkheid reg1 en reg2 is: " + regex.regex.Equals(regex.regex2));
+                            Console.WriteLine("druk op enter om door te gaan");
+                            Console.ReadLine();
+                            break;
+                        case 3:
+                            running = false;
+                            samples.Clear();
                             break;
                     }
                 }
