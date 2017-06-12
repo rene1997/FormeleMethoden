@@ -11,9 +11,10 @@ namespace Automaat
         public static void PrintGraph<T>(Automaat<T> data, string filename) where T : IComparable
         {
             var s = "digraph{ ";
+            s += GetFinalStatesData(data);
 
             s += GetStartStatesData(data);
-            s += GetFinalStatesData(data);
+            
 
             s += "node [shape = circle];";
 

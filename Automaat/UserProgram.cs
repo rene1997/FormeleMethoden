@@ -453,7 +453,7 @@ namespace Automaat
         private class ThompsonSample : SubMenu
         {
             private List<RegexStruct> samples = new List<RegexStruct>();
-            private string[] actions = { "0) automaat met thompson" , "1) terug"};
+            private string[] actions = { "0) automaat met thompson" ,"1) DFA" , "2) Geminimalizeerd", "3) terug"};
 
             public void ShowMenu()
             {
@@ -488,6 +488,12 @@ namespace Automaat
                             Thompson.CreateAutomaat(regexStruct.regex).ViewImage();
                             break;
                         case 1:
+                            NdfatoDfa.MakeDfa(Thompson.CreateAutomaat(regexStruct.regex)).ViewImage();
+                            break;
+                        case 2:
+                            NdfatoDfa.MakeDfa(Thompson.CreateAutomaat(regexStruct.regex)).MinimizeHopCroft(false).ViewImage();
+                            break;
+                        case 3:
                             running = false;
                             samples.Clear();
                             break;

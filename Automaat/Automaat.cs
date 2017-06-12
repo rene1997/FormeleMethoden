@@ -289,7 +289,8 @@ namespace Automaat
                 {
                     foreach(char c in Alphabet)
                     {
-                        automaat.AddTransition(new Transition<int>(block.Identifier, c, block.Rows[0].FindDestination(c).Identifier));
+                        if(block.Rows.Count > 0)
+                            automaat.AddTransition(new Transition<int>(block.Identifier, c, block.Rows[0].FindDestination(c).Identifier));
                     }
                     Automaat._startStates.ToList().ForEach(startstate =>
                     {
