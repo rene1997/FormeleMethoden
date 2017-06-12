@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -41,11 +42,16 @@ namespace Automaat.form
         {
             if (this.listOfDfas.SelectedIndex != -1)
             {
-                Console.WriteLine(this.listOfDfas.SelectedValue);
-                // If we also wanted to get the displayed text we could use
-                // the SelectedItem item property:
-                // string s = ((USState)ListBox1.SelectedItem).LongName;
+                //Console.WriteLine(this.listOfDfas.SelectedValue);
             }
+        }
+
+        private void toonDfaButton_Click(object sender, EventArgs e)
+        {
+            if (this.listOfDfas.SelectedIndex == -1) return;
+
+            var tuple = this.listOfDfas.SelectedItem as Tuple<string, Automaat<int>>;
+            tuple?.Item2.ViewImage(tuple.Item1);
         }
     }
 }

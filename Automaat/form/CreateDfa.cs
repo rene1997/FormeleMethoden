@@ -17,19 +17,24 @@ namespace Automaat.form
         {
             InitializeComponent();
             this.dfaTypeCombobox.DataSource = Enum.GetValues(typeof(AutomaatGenerator.AutomaatType));
+
+            CreateDfaFromData("bbab", "ab", AutomaatGenerator.AutomaatType.BEGINT_MET, true);
+            CreateDfaFromData("aba", "ab", AutomaatGenerator.AutomaatType.BEVAT, false);
+            CreateDfaFromData("baab", "ab", AutomaatGenerator.AutomaatType.EINDIGT_OP, false);
         }
 
         private void CreateButton_Click(object sender, EventArgs e)
         {
-            if (CreateDfaFromData()) 
+            var patroon = this.patroonTextBox.Text;
+            var alfabet = this.alfabetTextBox.Text;
+            var type = (AutomaatGenerator.AutomaatType)this.dfaTypeCombobox.SelectedItem;
+            var isNot = this.isNietCheckBox.Checked;
+            if (CreateDfaFromData(patroon, alfabet, type, isNot)) 
                 Router.Instance.RouteTo(Router.FormId.Default);
         }
 
-        private bool CreateDfaFromData()
+        private bool CreateDfaFromData(string patroon, string alfabet, AutomaatGenerator.AutomaatType type, bool isNot)
         {
-            var patroon = this.patroonTextBox.Text;
-            var alfabet = this.alfabetTextBox.Text;
-            var type = (AutomaatGenerator.AutomaatType) this.dfaTypeCombobox.SelectedItem;
             if (string.IsNullOrEmpty(patroon) || string.IsNullOrWhiteSpace(patroon)
                 || string.IsNullOrEmpty(alfabet) || string.IsNullOrWhiteSpace(alfabet))
             {
@@ -37,7 +42,9 @@ namespace Automaat.form
             }
 
             var dfa = AutomaatGenerator.GenerateAutomaat(patroon, alfabet.ToCharArray(), type);
-            Store.Instance.ListOfDfas.Add(new Tuple<string, Automaat<int>>($"{type} {patroon}", dfa));
+            if (isNot) dfa = !dfa;
+            var notString = isNot ? " Not " : " ";
+            Store.Instance.ListOfDfas.Add(new Tuple<string, Automaat<int>>($"{type}{notString}{patroon}", dfa));
             return true;
         }
     }
