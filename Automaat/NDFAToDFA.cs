@@ -40,7 +40,7 @@ namespace Automaat
             var betweenDfa = new Automaat<State<T>>(ndfa.GetAlphabet());
             var table = MakeTable(ndfa);
             // PrintTable(table);
-            var stateCounter = 0;
+            var stateCounter = 1;
 
             // Define start state
             var startStates = new SortedSet<T>(ndfa._startStates);
@@ -141,7 +141,7 @@ namespace Automaat
 
                 if (toStates.Count == 0)
                 {
-                    stateId = -1;
+                    stateId = 0;
                     foreach (var state in a._states)
                     {
                         if (state.Id == stateId)
