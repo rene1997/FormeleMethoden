@@ -38,6 +38,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -48,6 +50,20 @@
   <ItemGroup>
     <Compile Include="Automaat.cs" />
     <Compile Include="AutomaatGenerator.cs" />
+    <Compile Include="form\CreateDfa.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="form\CreateDfa.Designer.cs">
+      <DependentUpon>CreateDfa.cs</DependentUpon>
+    </Compile>
+    <Compile Include="form\DoubleR_FM.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="form\DoubleR_FM.Designer.cs">
+      <DependentUpon>DoubleR_FM.cs</DependentUpon>
+    </Compile>
+    <Compile Include="form\Router.cs" />
+    <Compile Include="form\Store.cs" />
     <Compile Include="Graphviz.cs" />
     <Compile Include="NdfatoDfa.cs" />
     <Compile Include="Program.cs" />
@@ -68,6 +84,14 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="form\CreateDfa.resx">
+      <DependentUpon>CreateDfa.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="form\DoubleR_FM.resx">
+      <DependentUpon>DoubleR_FM.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,16 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
+using Automaat.form;
 
 namespace Automaat
 {
     class Program
     {
         private static char[] Alphabet = {'a', 'b'};
+
+        [STAThread]
         static void Main(string[] args)
         {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new DoubleR_FM());
             //TestGenerateAutomaat();
             //Console.ReadLine();
-            new UserProgram();
+            //new UserProgram();
             //var App = new App();
             //App.Start();
             //new TestRegGram();
