@@ -20,7 +20,15 @@ namespace Automaat
             foreach (var t in data._transitions)
             {
                 //s += " " + ("S" + t.FromState) + " -> " + ("S" + t.ToState) + " " + "[ label = " + "\"" + t.Symbol + "\"" + " ];";
-                s += $" S{t.FromState} -> S{t.ToState} [ label = {t.Symbol} ]; ";
+                if (t.Symbol.Equals('$'))
+                {
+                    s += $" S{t.FromState} -> S{t.ToState} [ label = \"{t.Symbol}\" ]; ";
+                }
+                else
+                {
+                    s += $" S{t.FromState} -> S{t.ToState} [ label = {t.Symbol} ]; ";
+                }
+                
             }
             s += " }";
 

@@ -43,13 +43,13 @@ namespace Automaat
             var listStruct = new List<RegexStruct>();
             var a = new RegExp("a");
             var b = new RegExp("b");
-            var string1 = "aba(a*|b*)* begint met aba";
+            var int1 = "aba(a*|b*)* begint met aba";
             var reg1 = a.dot(b).dot(a).dot(a.or(b).star());
             var reg2 = new RegExp("a").dot(new RegExp("a").star()).dot(new RegExp("b").dot(new RegExp("b").star()));
             var reg3 = new RegExp("a").or(new RegExp("b"));
             var reg4 = new RegExp("a").plus().dot(new RegExp("a").star()).dot(new RegExp("b").plus());
             var reg5 = new RegExp("a").dot(new RegExp("a").star()).dot(new RegExp("b").dot(new RegExp("b").star()));
-            listStruct.Add(new RegexStruct { text = string1, regex = reg1 });
+            listStruct.Add(new RegexStruct { text = int1, regex = reg1 });
             listStruct.Add(new RegexStruct { regex = reg2, text = "a+b+" });
             listStruct.Add(new RegexStruct { regex = reg3.star(), text = "(a|b)*" });
             listStruct.Add(new RegexStruct { regex = reg4, text = "a+(a*)b+" });
@@ -173,7 +173,7 @@ namespace Automaat
             return input;
         }
 
-        String[] Hoofdmenu = {
+        string[] Hoofdmenu = {
             "regex => ndfa",
             "ndfa => dfa",
             "ndfa => grammatica",
@@ -263,7 +263,7 @@ namespace Automaat
                 }
             }
 
-            private void HandleSubMenu(int index, Automaat<string> automaat) 
+            private void HandleSubMenu(int index, Automaat<int> automaat) 
             {
                 if (index < 0 || index > 2) return;
                 switch (index)
@@ -453,7 +453,7 @@ namespace Automaat
         private class ThompsonSample : SubMenu
         {
             private List<RegexStruct> samples = new List<RegexStruct>();
-            private String[] actions = { "0) automaat met thompson" , "1) terug"};
+            private string[] actions = { "0) automaat met thompson" , "1) terug"};
 
             public void ShowMenu()
             {
@@ -499,7 +499,7 @@ namespace Automaat
         private class CompareRegex : SubMenu
         {
             private List<RegexStruct> samples = new List<RegexStruct>();
-            private String[] actions = { "0) automaat 1", "1) automaat 2", "2) controleer gelijkheid", "3) terug" };
+            private string[] actions = { "0) automaat 1", "1) automaat 2", "2) controleer gelijkheid", "3) terug" };
 
             public void ShowMenu()
             {
@@ -610,10 +610,10 @@ namespace Automaat
                 };
             }
 
-            private void BuildAutomaat(string ruleString, string alphabetString, int typeIndex)
+            private void BuildAutomaat(string ruleint, string alphabetint, int typeIndex)
             {
-                var a = new SortedSet<char>(alphabetString);
-                ruleString.ToCharArray().ToList().ForEach(c => a.Add(c));
+                var a = new SortedSet<char>(alphabetint);
+                ruleint.ToCharArray().ToList().ForEach(c => a.Add(c));
                 char[] alphabet = new char[a.Count];
                 for (int i = 0; i < a.Count; i++)
                 {
@@ -622,7 +622,7 @@ namespace Automaat
                 var type = (AutomaatGenerator.AutomaatType) _types.GetValue(typeIndex);
 
                 this._buildedAutomaat =
-                    AutomaatGenerator.GenerateAutomaat(ruleString, alphabet, type);
+                    AutomaatGenerator.GenerateAutomaat(ruleint, alphabet, type);
             }
         }
     }
