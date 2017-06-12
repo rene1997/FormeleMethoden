@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Automaat.form;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Automaat
 {
@@ -208,7 +210,8 @@ namespace Automaat
             _submenus.Add(new Minimalization());
             _submenus.Add(new ThompsonSample());
             _submenus.Add(new CompareRegex());
-            _submenus.Add(new BuildDfa());
+            //_submenus.Add(new BuildDfa());
+            _submenus.Add(new ShowGUI());
         }
 
         private interface SubMenu
@@ -629,6 +632,19 @@ namespace Automaat
 
                 this._buildedAutomaat =
                     AutomaatGenerator.GenerateAutomaat(ruleint, alphabet, type);
+            }
+        }
+
+        private class ShowGUI : SubMenu
+        {
+            
+            public void ShowMenu()
+            {
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new DoubleR_FM());
+
+                int input = GetInput(1);
             }
         }
     }

@@ -12,12 +12,12 @@ namespace Automaat
         [STAThread]
         static void Main(string[] args)
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new DoubleR_FM());
+            //Application.EnableVisualStyles();
+            //Application.SetCompatibleTextRenderingDefault(false);
+            //Application.Run(new DoubleR_FM());
             //TestGenerateAutomaat();
             //Console.ReadLine();
-            //new UserProgram();
+            new UserProgram();
             //var App = new App();
             //App.Start();
             //new TestRegGram();
