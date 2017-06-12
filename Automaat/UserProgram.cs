@@ -12,12 +12,154 @@ namespace Automaat
         public Automaat<int> automaat;
         public string text;
     }
+    
 
     public struct RegexStruct
     {
         public RegExp regex;
         public RegExp regex2;
         public string text;
+    }
+
+    public static class Samples
+    {
+        static char[] alphabet = { 'a', 'b' };
+
+        
+
+        public static List<AutomateStruct> GetSamples()
+        {
+            var listStruct = new List<AutomateStruct>();
+            listStruct.Add(new AutomateStruct {automaat = GetEndWithABB(), text = "eindigt op 'abb'" });
+            listStruct.Add(new AutomateStruct { automaat = GetStartWithABB(), text = "begint met 'abb'" });
+            listStruct.Add(new AutomateStruct { automaat = GetContainsABB(), text = "bevat 'abb'" });
+            listStruct.Add(new AutomateStruct { automaat = GetStartAbbOrEndBaab(), text = "begint met 'abb' of eindigt met 'baab'" });
+            listStruct.Add(new AutomateStruct { automaat = GetEvenBOrUnevenA(), text = "Oneven aantal a's of Even aantal b's" });
+            return listStruct;
+        }
+
+        public static List<RegexStruct> GetRegexs()
+        {
+            var listStruct = new List<RegexStruct>();
+            var a = new RegExp("a");
+            var b = new RegExp("b");
+            var string1 = "aba(a*|b*)* begint met aba";
+            var reg1 = a.dot(b).dot(a).dot(a.or(b).star());
+            var reg2 = new RegExp("a").dot(new RegExp("a").star()).dot(new RegExp("b").dot(new RegExp("b").star()));
+            var reg3 = new RegExp("a").or(new RegExp("b"));
+            var reg4 = new RegExp("a").plus().dot(new RegExp("a").star()).dot(new RegExp("b").plus());
+            var reg5 = new RegExp("a").dot(new RegExp("a").star()).dot(new RegExp("b").dot(new RegExp("b").star()));
+            listStruct.Add(new RegexStruct { text = string1, regex = reg1 });
+            listStruct.Add(new RegexStruct { regex = reg2, text = "a+b+" });
+            listStruct.Add(new RegexStruct { regex = reg3.star(), text = "(a|b)*" });
+            listStruct.Add(new RegexStruct { regex = reg4, text = "a+(a*)b+" });
+            listStruct.Add(new RegexStruct { regex = reg5, text = "a a* b b*" });
+            return listStruct;
+        }
+
+        private static Automaat<int> GetEndWithABB()
+        {
+            var a1 = new Automaat<int>(alphabet);
+            a1.AddTransition(new Transition<int>(0, Transition<int>.Epsilon, 1)); a1.AddTransition(new Transition<int>(0, Transition<int>.Epsilon, 7));
+            a1.AddTransition(new Transition<int>(1, Transition<int>.Epsilon, 2)); a1.AddTransition(new Transition<int>(1, Transition<int>.Epsilon, 4));
+            a1.AddTransition(new Transition<int>(2, alphabet[0], 3)); a1.AddTransition(new Transition<int>(3, Transition<int>.Epsilon, 6));
+            a1.AddTransition(new Transition<int>(4, alphabet[1], 5)); a1.AddTransition(new Transition<int>(5, Transition<int>.Epsilon, 6));
+            a1.AddTransition(new Transition<int>(6, Transition<int>.Epsilon, 7)); a1.AddTransition(new Transition<int>(7, alphabet[0], 8));
+            a1.AddTransition(new Transition<int>(6, Transition<int>.Epsilon, 1)); a1.AddTransition(new Transition<int>(8, alphabet[1], 9));
+            a1.AddTransition(new Transition<int>(9, alphabet[1], 10));
+            a1.DefineAsStartState(0);
+            a1.DefineAsFinalState(10);
+            return a1;
+        }
+
+        private static Automaat<int> GetStartWithABB()
+        {
+            var a1 = new Automaat<int>(alphabet);
+            a1.AddTransition(new Transition<int>(0, alphabet[0], 1));
+            a1.AddTransition(new Transition<int>(1, alphabet[1], 2));
+            a1.AddTransition(new Transition<int>(2, alphabet[1], 3));
+            a1.AddTransition(new Transition<int>(3, alphabet[0], 3));
+            a1.AddTransition(new Transition<int>(3, alphabet[1], 3));
+            a1.DefineAsStartState(0);
+            a1.DefineAsFinalState(3);
+            return a1;
+        }
+
+        private static Automaat<int> GetContainsABB()
+        {
+            var a1 = new Automaat<int>(alphabet);
+            a1.AddTransition(new Transition<int>(0, alphabet[0], 1));
+            a1.AddTransition(new Transition<int>(0, alphabet[1], 0));
+            a1.AddTransition(new Transition<int>(1, alphabet[0], 1));
+            a1.AddTransition(new Transition<int>(1, alphabet[1], 2));
+            a1.AddTransition(new Transition<int>(2, alphabet[0], 1));
+            a1.AddTransition(new Transition<int>(2, alphabet[1], 3));
+            a1.AddTransition(new Transition<int>(3, alphabet[0], 3));
+            a1.AddTransition(new Transition<int>(3, alphabet[1], 3));
+            a1.DefineAsStartState(0);
+            a1.DefineAsFinalState(3);
+            return a1;
+        }
+
+        private static Automaat<int> GetStartAbbOrEndBaab()
+        {
+            char[] alphabet = { 'a', 'b' };
+            Automaat<int> m = new Automaat<int>(alphabet);
+            m.AddTransition(new Transition<int>(1, 'a', 2));
+            m.AddTransition(new Transition<int>(1, 'b', 5));
+            m.AddTransition(new Transition<int>(2, 'a', 9));
+            m.AddTransition(new Transition<int>(2, 'b', 3));
+            m.AddTransition(new Transition<int>(3, 'a', 6));
+            m.AddTransition(new Transition<int>(3, 'b', 4));
+            m.AddTransition(new Transition<int>(4, 'a', 4));
+            m.AddTransition(new Transition<int>(4, 'b', 4));
+            m.AddTransition(new Transition<int>(5, 'a', 6));
+            m.AddTransition(new Transition<int>(5, 'b', 5));
+            m.AddTransition(new Transition<int>(6, 'a', 7));
+            m.AddTransition(new Transition<int>(6, 'b', 5));
+            m.AddTransition(new Transition<int>(7, 'a', 9));
+            m.AddTransition(new Transition<int>(7, 'b', 8));
+            m.AddTransition(new Transition<int>(8, 'a', 6));
+            m.AddTransition(new Transition<int>(8, 'b', 5));
+            m.AddTransition(new Transition<int>(9, 'a', 9));
+            m.AddTransition(new Transition<int>(9, 'b', 5));
+            m.DefineAsStartState(1);
+            m.DefineAsFinalState(4);
+            m.DefineAsFinalState(8);
+            return m;
+        }
+
+        private static Automaat<int> GetEvenBOrUnevenA()
+        {
+            char[] alphabet = { 'a', 'b' };
+            Automaat<int> m = new Automaat<int>(alphabet);
+
+            m.AddTransition(new Transition<int>(1, alphabet[0], 2));
+            m.AddTransition(new Transition<int>(1, alphabet[1], 3));
+
+            m.AddTransition(new Transition<int>(2, alphabet[0], 1));
+            m.AddTransition(new Transition<int>(2, alphabet[1], 5));
+
+            m.AddTransition(new Transition<int>(3, alphabet[0], 2));
+            m.AddTransition(new Transition<int>(3, alphabet[1], 4));
+
+            m.AddTransition(new Transition<int>(4, alphabet[0], 2));
+            m.AddTransition(new Transition<int>(4, alphabet[1], 4));
+
+            m.AddTransition(new Transition<int>(5, alphabet[0], 1));
+            m.AddTransition(new Transition<int>(5, alphabet[1], 4));
+
+            // only on start state in a dfa:
+            m.DefineAsStartState(1);
+
+            // two final states:
+            m.DefineAsFinalState(2);
+            m.DefineAsFinalState(4);
+            m.DefineAsFinalState(5);
+            return m;
+        }
+
+
     }
 
     public class UserProgram
@@ -76,14 +218,14 @@ namespace Automaat
 
         private class RegToNDFA : SubMenu
         {
-            List<Tuple<string, RegExp>> sampleRegex = new List<Tuple<string, RegExp>>();
+            List<RegexStruct> sampleRegex = new List<RegexStruct>();
             public void ShowMenu()
             {
                 FillSamples();
                 Console.Clear();
                 Console.WriteLine("regex => ndfa gekozen \nkies een regex");
                 int index = 0;
-                sampleRegex.ForEach(r => { Console.WriteLine($"{index}) {r.Item1}");  index++; });
+                sampleRegex.ForEach(r => { Console.WriteLine($"{index}) {r.text}");  index++; });
                 index = GetInput(sampleRegex.Count);
                 if (index >= 0)
                     ShowRegex(index);
@@ -91,17 +233,13 @@ namespace Automaat
 
             private void FillSamples()
             {
-                var a = new RegExp("a");
-                var b = new RegExp("b");
-                var string1 = "aba(a*|b*)* begint met aba";
-                var reg1 = a.dot(b).dot(a).dot(a.or(b).star());
-                sampleRegex.Add(new Tuple<string, RegExp>(string1, reg1));
+                sampleRegex =Samples.GetRegexs();
             }
 
             private void ShowRegex(int index)
             {
-                var regex = sampleRegex[index].Item2;
-                Console.WriteLine($"regex naar ndfa: " + sampleRegex[index].Item1);
+                var regex = sampleRegex[index].regex;
+                Console.WriteLine($"regex naar ndfa: " + sampleRegex[index].text);
                 Console.WriteLine("automaat:");
                 var automaat = Thompson.CreateAutomaat(regex);
                 automaat.Print();
@@ -137,7 +275,7 @@ namespace Automaat
                         NdfatoDfa.MakeDfa(automaat).ViewImage();
                         break;
                     case 2:
-                        automaat.MinimizeReverse().ViewImage();
+                        automaat.MinimizeHopCroft(false).ViewImage();
                         break;
                 }
             }
@@ -162,27 +300,7 @@ namespace Automaat
 
             private void FillSamples()
             {
-                char[] alphabet = { 'a', 'b' };
-                var m1 = new AutomateStruct();
-                m1.text = "eindigt op abb";
-                var a1 = new Automaat<int>(alphabet);
-                a1.AddTransition(new Transition<int>(0, Transition<int>.Epsilon, 1));
-                a1.AddTransition(new Transition<int>(0, Transition<int>.Epsilon, 7));
-                a1.AddTransition(new Transition<int>(1, Transition<int>.Epsilon, 2));
-                a1.AddTransition(new Transition<int>(1, Transition<int>.Epsilon, 4));
-                a1.AddTransition(new Transition<int>(2, alphabet[0], 3));
-                a1.AddTransition(new Transition<int>(3, Transition<int>.Epsilon, 6));
-                a1.AddTransition(new Transition<int>(4, alphabet[1], 5));
-                a1.AddTransition(new Transition<int>(5, Transition<int>.Epsilon, 6));
-                a1.AddTransition(new Transition<int>(6, Transition<int>.Epsilon, 7));
-                a1.AddTransition(new Transition<int>(6, Transition<int>.Epsilon, 1));
-                a1.AddTransition(new Transition<int>(7, alphabet[0], 8));
-                a1.AddTransition(new Transition<int>(8, alphabet[1], 9));
-                a1.AddTransition(new Transition<int>(9, alphabet[1], 10));
-                a1.DefineAsStartState(0);
-                a1.DefineAsFinalState(10);
-                m1.automaat = a1;
-                automates.Add(m1);
+                automates = Samples.GetSamples();
             }
 
             private void HandleSubInput(AutomateStruct automate)
@@ -206,7 +324,7 @@ namespace Automaat
                             Graphviz.PrintGraph(dfa, "test");
                             break;
                         case 2:
-                            Graphviz.PrintGraph(dfa.MinimizeReverse(), "test");
+                            Graphviz.PrintGraph(dfa.MinimizeHopCroft(false), "test");
                             break;
                         case 3:
                             running = false;
@@ -243,27 +361,7 @@ namespace Automaat
 
             private void FillList()
             {
-                char[] alphabet = { 'a', 'b' };
-                var m1 = new AutomateStruct();
-                m1.text = "eindigt op abb";
-                var a1 = new Automaat<int>(alphabet);
-                a1.AddTransition(new Transition<int>(0, Transition<int>.Epsilon, 1));
-                a1.AddTransition(new Transition<int>(0, Transition<int>.Epsilon, 7));
-                a1.AddTransition(new Transition<int>(1, Transition<int>.Epsilon, 2));
-                a1.AddTransition(new Transition<int>(1, Transition<int>.Epsilon, 4));
-                a1.AddTransition(new Transition<int>(2, alphabet[0], 3));
-                a1.AddTransition(new Transition<int>(3, Transition<int>.Epsilon, 6));
-                a1.AddTransition(new Transition<int>(4, alphabet[1], 5));
-                a1.AddTransition(new Transition<int>(5, Transition<int>.Epsilon, 6));
-                a1.AddTransition(new Transition<int>(6, Transition<int>.Epsilon, 7));
-                a1.AddTransition(new Transition<int>(6, Transition<int>.Epsilon, 1));
-                a1.AddTransition(new Transition<int>(7, alphabet[0], 8));
-                a1.AddTransition(new Transition<int>(8, alphabet[1], 9));
-                a1.AddTransition(new Transition<int>(9, alphabet[1], 10));
-                a1.DefineAsStartState(0);
-                a1.DefineAsFinalState(10);
-                m1.automaat = a1;
-                automates.Add(m1);
+                automates = Samples.GetSamples();
             }
 
             private void HandleSubInput(int index)
@@ -314,28 +412,7 @@ namespace Automaat
 
             private void FillList()
             {
-                automates = new List<AutomateStruct>();
-                char[] alphabet = { 'a', 'b' };
-                var m1 = new AutomateStruct();
-                m1.text = "eindigt op abb";
-                var a1 = new Automaat<int>(alphabet);
-                a1.AddTransition(new Transition<int>(0, Transition<int>.Epsilon, 1));
-                a1.AddTransition(new Transition<int>(0, Transition<int>.Epsilon, 7));
-                a1.AddTransition(new Transition<int>(1, Transition<int>.Epsilon, 2));
-                a1.AddTransition(new Transition<int>(1, Transition<int>.Epsilon, 4));
-                a1.AddTransition(new Transition<int>(2, alphabet[0], 3));
-                a1.AddTransition(new Transition<int>(3, Transition<int>.Epsilon, 6));
-                a1.AddTransition(new Transition<int>(4, alphabet[1], 5));
-                a1.AddTransition(new Transition<int>(5, Transition<int>.Epsilon, 6));
-                a1.AddTransition(new Transition<int>(6, Transition<int>.Epsilon, 7));
-                a1.AddTransition(new Transition<int>(6, Transition<int>.Epsilon, 1));
-                a1.AddTransition(new Transition<int>(7, alphabet[0], 8));
-                a1.AddTransition(new Transition<int>(8, alphabet[1], 9));
-                a1.AddTransition(new Transition<int>(9, alphabet[1], 10));
-                a1.DefineAsStartState(0);
-                a1.DefineAsFinalState(10);
-                m1.automaat = a1;
-                automates.Add(m1);
+                automates = Samples.GetSamples();
             }
 
             private void HandleSubMenu(AutomateStruct automaat)
@@ -354,7 +431,10 @@ namespace Automaat
                             automaat.automaat.ViewImage();
                             break;
                         case 1:
-                            var minimizedh = automaat.automaat.MinimizeHopCroft();
+                            Console.Clear();
+                            Console.WriteLine("laatste minimalisatie tabel: \t druk op enter om het bijbehorende automaat te zien");
+                            var minimizedh = automaat.automaat.MinimizeHopCroft(true);
+                            Console.ReadLine();
                             minimizedh.ViewImage();
                             break;
                         case 2:
@@ -389,11 +469,8 @@ namespace Automaat
 
             public void FillList()
             {
-                samples = new List<RegexStruct>();
-                var reg1 = new RegExp("a").dot(new RegExp("a").star()).dot(new RegExp("b").dot(new RegExp("b").star()));
-                samples.Add(new RegexStruct { regex = reg1, text="a+b+" });
-                var reg2 = new RegExp("a").or(new RegExp("b"));
-                samples.Add(new RegexStruct { regex = reg2.star(), text = "(a|b)*" });
+                samples = Samples.GetRegexs();
+
             }
 
             private void ViewActions(RegexStruct regexStruct)
@@ -430,38 +507,39 @@ namespace Automaat
                 Console.Clear();
                 Console.WriteLine("Vergelijk regex gekozen: \nKies een voorbeeld:");
                 int index = 0;
-                samples.ForEach(s => { Console.WriteLine($"{index}) s.text"); index++; });
-                index = GetInput(samples.Count);
-                HandleAction(samples[index]);
+                samples.ForEach(s => { Console.WriteLine($"{index}) {s.text}"); index++; });
+                Console.WriteLine( "voer eerste regex in:");
+                var index1 = GetInput(samples.Count);
+                Console.WriteLine("voer tweede regex in:");
+                var index2 = GetInput(samples.Count);
+
+                HandleAction(samples[index1], samples[index2]);
             }
 
             private void FillList()
             {
-                samples = new List<RegexStruct>();
-                var reg1a = new RegExp("a").plus().dot(new RegExp("a").star()).dot(new RegExp("b").plus());
-                var reg1b = new RegExp("a").dot(new RegExp("a").star()).dot(new RegExp("b").dot(new RegExp("b").star()));
-                samples.Add(new RegexStruct { regex = reg1a, regex2 = reg1b, text = "a+(a*)b+ && a a* b b*" });
+                samples = Samples.GetRegexs();
             }
 
-            private void HandleAction(RegexStruct regex)
+            private void HandleAction(RegexStruct regex1, RegexStruct regex2)
             {
                 var running = true;
                 while (running)
                 {
                     Console.Clear();
-                    Console.WriteLine($"regex: {regex.text} gekozen. Kies een actie");
+                    Console.WriteLine($"regex: {regex1.text} en {regex2.text} gekozen. Kies een actie");
                     actions.ToList().ForEach(a => Console.WriteLine(a));
                     int input = GetInput(actions.Length);
                     switch (input)
                     {
                         case 0:
-                            Thompson.CreateAutomaat(regex.regex).ViewImage();
+                            Thompson.CreateAutomaat(regex1.regex).ViewImage();
                             break;
                         case 1:
-                            Thompson.CreateAutomaat(regex.regex2).ViewImage();
+                            Thompson.CreateAutomaat(regex2.regex).ViewImage();
                             break;
                         case 2:
-                            Console.WriteLine("gelijkheid reg1 en reg2 is: " + regex.regex.Equals(regex.regex2));
+                            Console.WriteLine("gelijkheid reg1 en reg2 is: " + regex1.regex.Equals(regex2.regex2));
                             Console.WriteLine("druk op enter om door te gaan");
                             Console.ReadLine();
                             break;

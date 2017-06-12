@@ -201,24 +201,27 @@ namespace Automaat
 
         public void ViewImage()
         {
-            this.ViewImage("Automaat picture");
+            this.ViewImage("Automaat_picture");
         }
 
         public void ViewImage(string filename)
         {
             var isEmptyNullOrWhiteSpace = string.IsNullOrWhiteSpace(filename) || string.IsNullOrEmpty(filename);
-            filename = !isEmptyNullOrWhiteSpace ? filename : "Automaat picture";
+            filename = !isEmptyNullOrWhiteSpace ? filename : "Automaat_picture";
             
             Graphviz.PrintGraph(this, filename);
         }
 
-        public Automaat<int> MinimizeHopCroft()
+        public Automaat<int> MinimizeHopCroft(bool printTable)
         {
             var newAutomaat = NdfatoDfa.MakeDfa(this);
             RemoveStates(); 
             var table = new Table(newAutomaat);
             table.Minimize();
-            table.Print();
+            if (printTable)
+            {
+                table.Print();
+            }
             return table.ToAutomaat();
         }
 
@@ -246,23 +249,29 @@ namespace Automaat
 
             public void Minimize()
             {
-                Blocks.ForEach(b => b.FindDestinations());
-                var isMinimized = true;
-                foreach(var block in Blocks)
+                var running = true;
+                while (running)
                 {
-                    if (!block.Minimize())
+                    Blocks.ForEach(b => b.FindDestinations());
+                    var isMinimized = true;
+                    foreach (var block in Blocks)
                     {
-                        isMinimized = false;
+                        if (!block.Minimize())
+                        {
+                            isMinimized = false;
+                        }
                     }
-                }
-                if (!isMinimized)
-                {
-                    for(int i = Blocks.Count -1; i >= 0; i--)
+                    if (!isMinimized)
                     {
-                        Blocks[i].SplitBlock();
+                        for (int i = Blocks.Count - 1; i >= 0; i--)
+                        {
+                            Blocks[i].SplitBlock();
+                        }
                     }
+                    else
+                        running = false;
                 }
-
+                
             }
 
             public void Print()
@@ -300,7 +309,7 @@ namespace Automaat
             private void InitBlocks()
             {
                 //finalStates
-                Blocks.Add(new Block(this, Automaat._finalStates, 'A') { isFinalState = true});
+                Blocks.Add(new Block(this, Automaat._finalStates, 0) { isFinalState = true});
 
                 //non finalstates:
                 var states = new SortedSet<int>();
@@ -310,20 +319,20 @@ namespace Automaat
                     Automaat._finalStates.ToList().ForEach(s => { if (s.Equals(state)) isFinalState = true;  });
                     if (!isFinalState) states.Add(state);
                 }
-                Blocks.Add(new Block(this, states, 'B'));
+                Blocks.Add(new Block(this, states, 1));
             }
         }
 
         private class Block 
         {
             public List<Row> Rows = new List<Row>();
-            public char Identifier;
+            public int Identifier;
             public SortedSet<int> States = new SortedSet<int>();
             public bool isFinalState { get; set; }
             private Table table;
             private Automaat<int> automaat;
             
-            public Block(Table table, List<Row> rows, char id)
+            public Block(Table table, List<Row> rows, int id)
             {
                 this.table = table;
                 this.automaat = table.Automaat;
@@ -332,7 +341,7 @@ namespace Automaat
                 rows.ForEach(r => States.Add(r.State));
             }
 
-            public Block(Table table, SortedSet<int> states, char id)
+            public Block(Table table, SortedSet<int> states, int id)
             {
                 this.table = table;
                 this.automaat = table.Automaat;

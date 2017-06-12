@@ -492,7 +492,7 @@ namespace Automaat
             m.DefineAsFinalState("4");
             Console.WriteLine("first automate:");
             m.PrintTransitions();
-            var minimized = m.MinimizeHopCroft();
+            var minimized = m.MinimizeHopCroft(true);
             Console.WriteLine("minimized automate:");
             minimized.PrintTransitions();
 
