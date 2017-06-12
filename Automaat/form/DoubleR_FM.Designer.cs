@@ -39,6 +39,7 @@
             this.listOfDfas.Name = "listOfDfas";
             this.listOfDfas.Size = new System.Drawing.Size(120, 537);
             this.listOfDfas.TabIndex = 0;
+            this.listOfDfas.SelectedValueChanged += new System.EventHandler(this.listOfDfas_SelectedValueChanged);
             // 
             // createDfaButton
             // 

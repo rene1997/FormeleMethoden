@@ -12,30 +12,40 @@ namespace Automaat.form
 {
     public partial class DoubleR_FM : Form
     {
-        private readonly Store _store;
-
         public DoubleR_FM()
         {
             InitializeComponent();
+            BindStoreToComponents();
+            InitRouter();
+        }
+
+        private void InitRouter()
+        {
             Router.Instance.AddRoute(Router.FormId.Default, this);
+            Router.Instance.AddRoute(Router.FormId.CreateDfa, new CreateDfa());
             Router.Instance.RouteTo(Router.FormId.Default);
-            
-            this._store = new Store();
         }
 
         private void BindStoreToComponents()
         {
-            this.listOfDfas.DataSource = _store.ListOfDfas;
+            this.listOfDfas.DataSource = Store.Instance.ListOfDfas;
+            this.listOfDfas.DisplayMember = "Item1";
         }
 
         private void createDfaButton_Click(object sender, EventArgs e)
         {
-            if (!Router.Instance.RouteTo(Router.FormId.CreateDfa, true))
-            {
-                Router.Instance.AddRoute(Router.FormId.CreateDfa, new CreateDfa());
-            }
+            Router.Instance.RouteTo(Router.FormId.CreateDfa);
+        }
 
-            Router.Instance.RouteTo(Router.FormId.CreateDfa, true);
+        private void listOfDfas_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (this.listOfDfas.SelectedIndex != -1)
+            {
+                Console.WriteLine(this.listOfDfas.SelectedValue);
+                // If we also wanted to get the displayed text we could use
+                // the SelectedItem item property:
+                // string s = ((USState)ListBox1.SelectedItem).LongName;
+            }
         }
     }
 }
