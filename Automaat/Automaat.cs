@@ -666,7 +666,7 @@ namespace Automaat
             
             foreach (var state in a._states)
             {
-                if (!a.IsFinalState(state))
+                if (!a._finalStates.Contains(state))
                 {
                     newA.DefineAsFinalState(state);
                 }
