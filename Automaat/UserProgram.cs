@@ -242,22 +242,27 @@ namespace Automaat
             private void ShowRegex(int index)
             {
                 var regex = sampleRegex[index].regex;
-                Console.WriteLine($"regex naar ndfa: " + sampleRegex[index].text);
-                Console.WriteLine("automaat:");
-                var automaat = Thompson.CreateAutomaat(regex);
-                automaat.Print();
+
                 bool running = true;
                 while (running)
                 {
+                    Console.Clear();
+                    Console.WriteLine($"regex naar ndfa: " + sampleRegex[index].text);
+                    Console.WriteLine("automaat:");
+                    var automaat = Thompson.CreateAutomaat(regex);
+                    automaat.Print();
+
                     Console.WriteLine("\n\n");
                     Console.WriteLine("kies een volgende actie:");
                     Console.WriteLine("0) toon afbeelding automaat");
                     Console.WriteLine("1) toon afbeelding dfa");
                     Console.WriteLine("2) toon afbeelding geminimaliseerde automaat");
-                    Console.WriteLine("3) terug naar hoofdmenu");
-                    index = GetInput(4);
+                    Console.WriteLine("3) toon geaccepteerde woorden");
+                    Console.WriteLine("4) toon niet geaccepteerde woorden");
+                    Console.WriteLine("5) terug naar hoofdmenu");
+                    index = GetInput(6);
                     HandleSubMenu(index, automaat);
-                    if (index < 0 || index > 2)
+                    if (index < 0 || index > 4)
                     {
                         running = false;
                         sampleRegex.Clear();
@@ -268,7 +273,6 @@ namespace Automaat
 
             private void HandleSubMenu(int index, Automaat<int> automaat) 
             {
-                if (index < 0 || index > 2) return;
                 switch (index)
                 {
                     case 0:
@@ -279,6 +283,14 @@ namespace Automaat
                         break;
                     case 2:
                         automaat.MinimizeHopCroft(false).ViewImage();
+                        break;
+                    case 3:
+                        automaat.GeefTaal(5).ForEach(s => Console.WriteLine(s));
+                        Console.ReadLine();
+                        break;
+                    case 4:
+                        automaat.GeefNietTaal(5).ForEach(s => Console.WriteLine(s));
+                        Console.ReadLine();
                         break;
                 }
             }
