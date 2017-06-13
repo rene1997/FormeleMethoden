@@ -564,13 +564,13 @@ namespace Automaat
                     switch (input)
                     {
                         case 0:
-                            Thompson.CreateAutomaat(regex1.regex).ViewImage();
+                            NdfatoDfa.MakeDfa(Thompson.CreateAutomaat(regex1.regex)).ViewImage();
                             break;
                         case 1:
-                            Thompson.CreateAutomaat(regex2.regex).ViewImage();
+                            NdfatoDfa.MakeDfa(Thompson.CreateAutomaat(regex2.regex)).ViewImage();
                             break;
                         case 2:
-                            Console.WriteLine("gelijkheid reg1 en reg2 is: " + regex1.regex.Equals(regex2.regex2));
+                            Console.WriteLine("gelijkheid reg1 en reg2 is: " + regex1.regex.Equals(regex2.regex));
                             Console.WriteLine("druk op enter om door te gaan");
                             Console.ReadLine();
                             break;

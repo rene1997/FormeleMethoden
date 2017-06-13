@@ -176,7 +176,7 @@ namespace Automaat
             if (item2._finalStates.Count != _finalStates.Count) return false;
             for(var i = 0; i < _finalStates.Count; i++)
             {
-                var f1 = _transitions.ElementAt(i);
+                var f1 = _finalStates.ElementAt(i);
                 var f2 = item2._finalStates.ElementAt(i);
                 if (!f1.Equals(f2)) return false;
             }

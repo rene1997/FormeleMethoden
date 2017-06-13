@@ -67,8 +67,8 @@ namespace Automaat
         {
             var reg = (RegExp)obj;
             if (reg == null) return false;
-            var automate1 = Thompson.CreateAutomaat(this).MinimizeReverse();
-            var automate2 = Thompson.CreateAutomaat(reg).MinimizeReverse();
+            var automate1 = NdfatoDfa.MakeDfa(Thompson.CreateAutomaat(this)).MinimizeHopCroft(false);
+            var automate2 = NdfatoDfa.MakeDfa(Thompson.CreateAutomaat(reg)).MinimizeHopCroft(false);
             return automate1.Equals(automate2);
         }
         
