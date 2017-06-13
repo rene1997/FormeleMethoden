@@ -300,7 +300,7 @@ namespace Automaat
         {
             private List<AutomateStruct> automates = new List<AutomateStruct>();
 
-            private string[] subsubtext = { "0) NDFA", "1) DFA", "2) Geminimaliseerd", "3) Terug" };
+            private string[] subsubtext = { "0) NDFA", "1) DFA", "2) Geminimaliseerd","3) Controleer woord" , "4) Terug" };
 
             public void ShowMenu()
             {
@@ -342,6 +342,16 @@ namespace Automaat
                             Graphviz.PrintGraph(dfa.MinimizeHopCroft(false), "test");
                             break;
                         case 3:
+                            Console.WriteLine($"typ woord: \ntoegestane symbolen: ");
+                            automate.automaat._symbols.ToList().ForEach(c => Console.WriteLine(c));
+                            var woord = Console.ReadLine();
+                            if(NdfatoDfa.MakeDfa(automate.automaat).Accepteer(woord))
+                                Console.WriteLine("Het ingevoerde woord wordt geaccepteerd door het automaat");
+                            else
+                                Console.WriteLine("Het ingevoerde woord wordt niet geaccepteerd door het automaat");
+                            Console.ReadLine(); 
+                            break;
+                        case 4:
                             running = false;
                             automates.Clear();
                             break;
