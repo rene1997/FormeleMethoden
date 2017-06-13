@@ -29,7 +29,7 @@ namespace Automaat.form
             var alfabet = this.alfabetTextBox.Text;
             var type = (AutomaatGenerator.AutomaatType)this.dfaTypeCombobox.SelectedItem;
             var isNot = this.isNietCheckBox.Checked;
-            if (CreateDfaFromData(patroon, alfabet, type, isNot)) 
+            if (CreateDfaFromData(patroon, alfabet, type, isNot))
                 Router.Instance.RouteTo(Router.FormId.Default);
         }
 
@@ -46,6 +46,11 @@ namespace Automaat.form
             var notString = isNot ? " Not " : " ";
             Store.Instance.ListOfDfas.Add(new Tuple<string, Automaat<int>>($"{type}{notString}{patroon}", dfa));
             return true;
+        }
+
+        private void backButton_Click(object sender, EventArgs e)
+        {
+            Router.Instance.RouteTo(Router.FormId.Default);
         }
     }
 }

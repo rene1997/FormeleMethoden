@@ -649,12 +649,16 @@ namespace Automaat
 
         private class ShowGUI : SubMenu
         {
-            
+            private bool _init = false;
             public void ShowMenu()
             {
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new DoubleR_FM());
+                if (!_init)
+                {
+                    Application.EnableVisualStyles();
+                    Application.SetCompatibleTextRenderingDefault(false);
+                    Application.Run(new DoubleR_FM());
+                    _init = true;
+                }
 
                 int input = GetInput(1);
             }

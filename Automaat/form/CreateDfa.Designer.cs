@@ -36,15 +36,16 @@
             this.alfabetLabel = new System.Windows.Forms.Label();
             this.alfabetTextBox = new System.Windows.Forms.TextBox();
             this.isNietCheckBox = new System.Windows.Forms.CheckBox();
+            this.backButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // CreateButton
             // 
-            this.CreateButton.Location = new System.Drawing.Point(134, 148);
+            this.CreateButton.Location = new System.Drawing.Point(88, 147);
             this.CreateButton.Name = "CreateButton";
             this.CreateButton.Size = new System.Drawing.Size(75, 23);
             this.CreateButton.TabIndex = 0;
-            this.CreateButton.Text = "Create";
+            this.CreateButton.Text = "Maak";
             this.CreateButton.UseVisualStyleBackColor = true;
             this.CreateButton.Click += new System.EventHandler(this.CreateButton_Click);
             // 
@@ -113,11 +114,22 @@
             this.isNietCheckBox.Text = "Is ontkenning";
             this.isNietCheckBox.UseVisualStyleBackColor = true;
             // 
+            // backButton
+            // 
+            this.backButton.Location = new System.Drawing.Point(169, 147);
+            this.backButton.Name = "backButton";
+            this.backButton.Size = new System.Drawing.Size(75, 23);
+            this.backButton.TabIndex = 8;
+            this.backButton.Text = "Terug";
+            this.backButton.UseVisualStyleBackColor = true;
+            this.backButton.Click += new System.EventHandler(this.backButton_Click);
+            // 
             // CreateDfa
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(256, 211);
+            this.Controls.Add(this.backButton);
             this.Controls.Add(this.isNietCheckBox);
             this.Controls.Add(this.alfabetTextBox);
             this.Controls.Add(this.alfabetLabel);
@@ -143,5 +155,6 @@
         private System.Windows.Forms.Label alfabetLabel;
         private System.Windows.Forms.TextBox alfabetTextBox;
         private System.Windows.Forms.CheckBox isNietCheckBox;
+        private System.Windows.Forms.Button backButton;
     }
 }
